@@ -9,7 +9,6 @@ public class CharacterManager : MonoBehaviour
 
     [SerializeField] private Transform weapon_hand;
     [SerializeField] private GameObject weapon;
-    [SerializeField] private SpellPhase chargeSpell;
     private GameObject currentWeapon;
 
     private CharacterStateMachine stateMachine;
@@ -44,11 +43,6 @@ public class CharacterManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
-        {
-            Debug.Log("Right click detected, casting charge spell.");
-            StartCoroutine(chargeSpell.ExecuteSpell(gameObject, result => Debug.Log("Spell execution result: " + result)));
-        }
     }
 
     private void OnEnable()

@@ -554,7 +554,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon_hand: {fileID: 859071317}
   weapon: {fileID: 4988546470218164204, guid: a8d4f3868689bba469758653b5ec832d, type: 3}
-  chargeSpell: {fileID: 11400000, guid: 62207e8b5ae315f4ea2e2720fff48451, type: 2}
 --- !u!136 &1101964574
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -569,6 +568,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &1101964577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101964564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f967ed4a25d6a7640bcb84c5c4cda1d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chargeSpellData: {fileID: 11400000, guid: baf6effafed3ce74f912aceef5b1fd01, type: 2}
 --- !u!1 &1219789291
 GameObject:
   m_ObjectHideFlags: 0

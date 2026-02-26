@@ -72,7 +72,6 @@ public class char_mov_iso : MonoBehaviour
                 targetRotation,
                 rotationSpeed * Time.deltaTime);
             }
-            Debug.Log("Current Speed:" + currentSpeed);
             // Move character
             controller.Move(moveDirection * currentSpeed * Time.deltaTime);
         }
