@@ -1,6 +1,6 @@
 using UnityEngine;
 using System;
-using JetBrains.Annotations;
+using Unity.VisualScripting;
 
 public class char_mov_iso : MonoBehaviour
 {
@@ -14,6 +14,7 @@ public class char_mov_iso : MonoBehaviour
     public bool isAttacking { get; private set; }
     public bool attackFinished { get; private set; }
 
+    public event Action OnHitObstacle;
     public void OnAttackFinished()
     {
         Debug.Log("Attack animation finished, invoking event.");
@@ -76,6 +77,12 @@ public class char_mov_iso : MonoBehaviour
             controller.Move(moveDirection * currentSpeed * Time.deltaTime);
         }
 
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        Debug.Log("char_mov -Collision with: " + hit.gameObject.name);
+        OnHitObstacle?.Invoke();
     }
     
     public void ModifySpeed(float multiplier)

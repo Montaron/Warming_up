@@ -4,7 +4,7 @@ public class CharacterCombat : MonoBehaviour
 {
     [SerializeField] private ChargeSpell_data chargeSpellData;
     private ISpellPhase chargeSpell;
-
+    private SpellCancelationToken cancelationToken;
     void Start()
     {
         if (chargeSpellData != null)
@@ -29,10 +29,10 @@ public class CharacterCombat : MonoBehaviour
     }
     private IEnumerator CastSpell(ISpellPhase spell)
     {
+        cancelationToken = new SpellCancelationToken();
+        spell.OnInit(gameObject, cancelationToken);
         spell.OnPhaseStart(gameObject);
-
         yield return StartCoroutine(spell.OnPhaseUpdate(gameObject));
-
         spell.OnPhaseEnd(gameObject);
     }
 
