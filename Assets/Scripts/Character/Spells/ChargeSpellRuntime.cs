@@ -1,27 +1,27 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 using System;
 
 public class ChargeSpellRuntime : ISpellPhase
 {
-    private char_mov_iso characterMovement;
-    private ChargeSpell_data data;
-    private SpellCancelationToken cancellationToken;
+    private CharacterMovement_iso characterMovement;
+    public ChargeSpell_data data { get; private set; }
+    private SpellFateToken spellFateToken;
+    private CharacterCombat characterCombat;
+
     public ChargeSpellRuntime(ChargeSpell_data data)
     {
         this.data = data;
     }
 
-    public void OnInit(GameObject caster, SpellCancelationToken cancelationToken)
+    public void OnInit(GameObject caster, SpellFateToken cancelationToken)
     {
-        this.cancellationToken = cancelationToken;
+        this.spellFateToken = cancelationToken;
         characterMovement.OnHitObstacle += HandleObstacleHit;
     }
     public void OnPhaseStart(GameObject caster)
     {
-        if (cancellationToken.IsCanceled)
+        if (spellFateToken.IsCanceled)
         {
             Debug.Log("Charge Spell Start Canceled");
             return;
@@ -36,7 +36,9 @@ public class ChargeSpellRuntime : ISpellPhase
         float elapsedTime = 0f;
         while (elapsedTime < data.chargeDuration)
         {
-            if (cancellationToken.IsCanceled)
+            characterMovement.LockDirection = true;
+            characterMovement.ForceForward = true;
+            if (spellFateToken.IsCanceled)
             {
                 Debug.Log("Charge Spell Canceled");
                 yield break;
@@ -53,7 +55,9 @@ public class ChargeSpellRuntime : ISpellPhase
     {
         characterMovement.OnHitObstacle -= HandleObstacleHit;
         characterMovement.ResetSpeed();
-        if (cancellationToken.IsCanceled)
+        characterMovement.LockDirection = false;
+        characterMovement.ForceForward = false;
+        if (spellFateToken.IsCanceled)
         {
             Debug.Log("Charge Spell Ended Prematurely");
         }
@@ -64,7 +68,7 @@ public class ChargeSpellRuntime : ISpellPhase
     }
     public bool Validate(GameObject caster)
     {
-        if (caster.TryGetComponent(out char_mov_iso movement))
+        if (caster.TryGetComponent(out CharacterMovement_iso movement))
         {
             characterMovement = movement;
             return true;
@@ -74,6 +78,6 @@ public class ChargeSpellRuntime : ISpellPhase
 
     private void HandleObstacleHit()
     {
-        cancellationToken.Cancel();
+        spellFateToken.Cancel(SpellCancelBy.ObstacleHit);
     }
 }

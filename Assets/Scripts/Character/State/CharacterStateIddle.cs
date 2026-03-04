@@ -17,14 +17,9 @@ public class CharacterStateIddle : CharacterState
 
     public override void HandleInput()
     {
-        if (player_mov.isAttacking)
-        {
-            stateMachine.ChangeState(stateMachine.attackingState);
-        }
-
         if (player_mov.inputVector.magnitude > 0.1f)
         {
-            stateMachine.ChangeState(stateMachine.runningState); // Placeholder for actual movement state
+            stateMachine.ChangeState(CharacterStateType.Running); // Placeholder for actual movement state
         } 
     }
 }

@@ -8,7 +8,6 @@ public class CharacterStateAttack : CharacterState
     public override CharacterStateType stateType => CharacterStateType.Attacking;
     public override void Enter()
     {
-        stateMachine.Animator.SetTrigger("Attack");
         Debug.Log(stateType);
     }
     public override void Exit()
@@ -17,9 +16,6 @@ public class CharacterStateAttack : CharacterState
 
     public override void HandleInput()
     {
-        if (player_mov.attackFinished)
-        {
-            stateMachine.ChangeState(stateMachine.previousState); // Return to previous state after attack
-        }
+        stateMachine.ChangeState(stateMachine.previousState.stateType); // Return to previous state after attack
     }
 }

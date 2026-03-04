@@ -3,7 +3,7 @@ using UnityEngine;
 public abstract class CharacterState
 {
     protected CharacterStateMachine stateMachine;
-    protected char_mov_iso player_mov;
+    protected CharacterMovement_iso player_mov;
     public abstract CharacterStateType stateType {get;}
 
     protected CharacterState(CharacterStateMachine stateMachine)
@@ -24,6 +24,8 @@ public enum CharacterStateType
 {
     Iddle,
     Running,
-    Attacking
+    Stunned,
+    Attacking,
+    Casting
 }
 

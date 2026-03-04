@@ -6,12 +6,10 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
-
-    [SerializeField] private Transform weapon_hand;
-    [SerializeField] private GameObject weapon;
-    private GameObject currentWeapon;
-
     private CharacterStateMachine stateMachine;
+    private CharacterCombat characterCombat;
+    private InputHandler inputHandler;
+    private CharacterMovement_iso characterMov_iso;
     public CharacterStateType currentState { get; private set; }
 
     void Awake()
@@ -21,36 +19,59 @@ public class CharacterManager : MonoBehaviour
         {
             Debug.LogWarning("stateMachine not referenced");
         }
+        inputHandler = GetComponent<InputHandler>();
+        if (inputHandler == null)
+        {
+            Debug.LogWarning("inputHandler not referenced");
+        }
+        characterCombat = GetComponent<CharacterCombat>();
+        if (characterCombat == null)
+        {
+            Debug.LogWarning("CharacterCombat not referenced");
+        }
     }
-        void Start()
+    void Start()
     {
         
-        if (weapon != null && weapon_hand != null)
+    }
+    
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    private void OnEnable()
+    {
+        stateMachine.OnStateChanged += UpdateCurrentState;
+        inputHandler.OnMoveInput += HandleMoveInput;
+        inputHandler.OnSpellRequested += HandleSpellRequested;
+    }
+
+    private void HandleSpellRequested(Spell_data data)
+    {
+        if (currentState == CharacterStateType.Iddle)
         {
-            currentWeapon = Instantiate(weapon, weapon_hand);
-            currentWeapon.transform.localPosition = Vector3.zero;
-            currentWeapon.transform.localRotation = Quaternion.identity;
-            currentWeapon.transform.localScale = Vector3.one;
+            stateMachine.ChangeState(CharacterStateType.Attacking);
+            characterCombat.CastSpellRequest(data);
         }
     }
 
+    private void HandleMoveInput(Vector2 vector)
+    {
+        Debug.Log("Received move input: " + vector);
+    }
+
+    private void OnDisable()
+    {
+        stateMachine.OnStateChanged -= UpdateCurrentState;
+        inputHandler.OnMoveInput -= HandleMoveInput;
+        inputHandler.OnSpellRequested -= HandleSpellRequested;
+    }
     private void UpdateCurrentState(CharacterStateType type)
     {
         currentState = type;
         Debug.Log("State Changed to :" + currentState.ToString());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
-    private void OnEnable()
-    {
-        stateMachine.OnStateChanged += UpdateCurrentState;
-    }
-    private void OnDisable()
-    {
-        stateMachine.OnStateChanged -= UpdateCurrentState;
-    }
 } 

@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterStateMachine : MonoBehaviour
 {
-    public char_mov_iso Player_Mov { get; private set; }
+    public CharacterMovement_iso Player_Mov { get; private set; }
     public Animator Animator { get; private set; }
 
     public CharacterStateIddle idleState { get; private set; }
@@ -11,21 +12,28 @@ public class CharacterStateMachine : MonoBehaviour
     public CharacterStateAttack attackingState { get; private set; }
 
     public CharacterState previousState { get; private set; }
-    private CharacterState currentState;
-
+    public CharacterState currentState { get; private set; }
     public Action<CharacterStateType> OnStateChanged;
+    private Dictionary<CharacterStateType, CharacterState> stateMap;
     // Start is called before the first frame update
     void Awake()
     {
         Animator = GetComponent<Animator>();
-        Player_Mov = GetComponent<char_mov_iso>();
+        Player_Mov = GetComponent<CharacterMovement_iso>();
         idleState = new CharacterStateIddle(this);
         runningState = new CharacterStateRunning(this);
         attackingState = new CharacterStateAttack(this);
+        stateMap = new Dictionary<CharacterStateType, CharacterState>
+        {
+            { idleState.stateType, idleState },
+            { runningState.stateType, runningState },
+            { attackingState.stateType, attackingState }
+        };
+
     }
     void Start()
     {
-        ChangeState(idleState);
+        ChangeState(idleState.stateType);
         previousState = idleState;
     }
 
@@ -35,18 +43,26 @@ public class CharacterStateMachine : MonoBehaviour
         currentState.HandleInput();
     }
 
-    public void ChangeState(CharacterState newState)
+    private CharacterState GetStateFromType(CharacterStateType type)
     {
-        if (newState == null)
+        if (stateMap.TryGetValue(type, out CharacterState state))
+            return state;
+        throw new ArgumentOutOfRangeException(nameof(type), $"No state found for type {type}");
+    }
+
+    public void ChangeState(CharacterStateType newStateType)
+    {
+        if (currentState == null)
         {
-            Debug.LogWarning("Trying to change to a null state.");
+            currentState = GetStateFromType(newStateType);
+            currentState.Enter();
             return;
         }
-        if (currentState == newState)
+        if (currentState.stateType == newStateType)
             return;
         currentState?.Exit();
         previousState = currentState;
-        currentState = newState;
+        currentState = GetStateFromType(newStateType);
         OnStateChanged?.Invoke(currentState.stateType);
         currentState.Enter();
     }

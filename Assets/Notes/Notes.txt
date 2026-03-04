@@ -1,0 +1,2 @@
+Faire l'input en fonction d'un event
+Faire communiquer le StateManager avec le CombatManager 

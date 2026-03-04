@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Charge
   m_EditorClassIdentifier: 
   spellName: Charge
-  speedMultiplierStart: 2
-  speedMultiplierMax: 5
+  interruptableBy: 4
+  castContext: 3
+  speedMultiplierStart: 5
+  speedMultiplierMax: 8
   timeToReachMaxMultiplier: 10
   chargeDuration: 5
