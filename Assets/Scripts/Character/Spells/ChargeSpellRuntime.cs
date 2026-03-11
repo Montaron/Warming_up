@@ -2,82 +2,73 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public class ChargeSpellRuntime : ISpellPhase
+public class ChargeSpellRuntime : BaseSpellRuntime
 {
-    private CharacterMovement_iso characterMovement;
-    public ChargeSpell_data data { get; private set; }
-    private SpellFateToken spellFateToken;
-    private CharacterCombat characterCombat;
+    public ChargeSpell_data charge_data { get; private set; }
+    protected override bool loopLoopPhase => true;
+    private GameObject target;
 
-    public ChargeSpellRuntime(ChargeSpell_data data)
+    public ChargeSpellRuntime(GameObject caster, ChargeSpell_data data, GameObject target)
+            : base(caster, data)
     {
-        this.data = data;
-    }
-
-    public void OnInit(GameObject caster, SpellFateToken cancelationToken)
-    {
-        this.spellFateToken = cancelationToken;
-        characterMovement.OnHitObstacle += HandleObstacleHit;
-    }
-    public void OnPhaseStart(GameObject caster)
-    {
-        if (spellFateToken.IsCanceled)
+        if (target != null)
         {
-            Debug.Log("Charge Spell Start Canceled");
-            return;
+            this.target = target;
         }
-        else
-        {            
-            Debug.Log("Charge Spell Start");
-        }
+        if (data != null)
+        { charge_data = data; }
+    }
+
+    public override bool Validate(GameObject caster, SpellFateToken token)
+    {
+        if (!base.Validate(caster, token)) return false;
+        base.movement.OnHitObstacle += HandleObstacleHit;
+        return true;
     }
     public IEnumerator OnPhaseUpdate(GameObject caster)
     {
         float elapsedTime = 0f;
-        while (elapsedTime < data.chargeDuration)
+        while (elapsedTime < charge_data.chargeDuration)
         {
-            characterMovement.LockDirection = true;
-            characterMovement.ForceForward = true;
-            if (spellFateToken.IsCanceled)
-            {
-                Debug.Log("Charge Spell Canceled");
+            if (token.IsCanceled)
                 yield break;
-            }
-            float t = Mathf.Clamp01(elapsedTime / data.timeToReachMaxMultiplier);
-            float speedMultiplier = 
-                    Mathf.Lerp(data.speedMultiplierStart, data.speedMultiplierMax, t);
-            characterMovement.ModifySpeed(speedMultiplier);
+            float t = Mathf.Clamp01(elapsedTime / charge_data.timeToReachMaxMultiplier);
+            float speedMultiplier =
+                    Mathf.Lerp(charge_data.speedMultiplierStart, charge_data.speedMultiplierMax, t);
+            movement.ModifySpeed(speedMultiplier);
+            movement.MoveCharacterForward();
             elapsedTime += Time.deltaTime;
             yield return null;
         }
     }
-    public void OnPhaseEnd(GameObject caster)
+    public override void SpellEnd()
     {
-        characterMovement.OnHitObstacle -= HandleObstacleHit;
-        characterMovement.ResetSpeed();
-        characterMovement.LockDirection = false;
-        characterMovement.ForceForward = false;
-        if (spellFateToken.IsCanceled)
-        {
-            Debug.Log("Charge Spell Ended Prematurely");
-        }
-        else
-        {
-            Debug.Log("Charge Spell Ended Normally");
-        }
+        base.movement.OnHitObstacle -= HandleObstacleHit;
+        base.movement.ResetSpeed();
     }
     public bool Validate(GameObject caster)
     {
         if (caster.TryGetComponent(out CharacterMovement_iso movement))
         {
-            characterMovement = movement;
+            this.movement = movement;
             return true;
-        }    
+        }
         return false;
     }
 
-    private void HandleObstacleHit()
+    private void HandleObstacleHit(Collider collider)
     {
-        spellFateToken.Cancel(SpellCancelBy.ObstacleHit);
+        if (ComponentUtils.TryGetDamageable(collider, out IDamageable damageable))
+        {
+            var damageData = new DamageData
+            {
+                damage = charge_data.damage,
+                attacker = caster,
+                target = collider.gameObject,
+            };
+            damageable.TakeDamage(damageData);
+            Debug.Log($"{damageData.target.name} took {damageData.damage} from {damageData.attacker.name ?? "unknown"}");
+        }
+        token.Cancel(SpellCancelBy.ObstacleHit);
     }
 }

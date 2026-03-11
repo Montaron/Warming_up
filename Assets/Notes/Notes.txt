@@ -1,2 +1,9 @@
 Faire l'input en fonction d'un event
 Faire communiquer le StateManager avec le CombatManager 
+
+Sort commence -> event trigger par CharacterCombat et recu par CharacterManager -> stateChange et event a la fin -> stateChange
+
+Enemy class contient un SO avec ses stats et une interface IDamageable qui contient une methode qui doit etre implementee par la classe qui souscrit a cette derniere.
+Quand une collision a lieu, le sort avec le movement component un event est trigger avec le collider et la charge peut declencher l'execution de la methode IDamageable
+
+Si le sort cree lui meme un collider, on peut detecter les collisions dans la classe meme.

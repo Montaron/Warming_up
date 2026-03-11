@@ -11,10 +11,7 @@ public class CharacterMovement_iso : MonoBehaviour
 
     public Vector2 inputVector { get; private set; }
     public Vector3 moveDirection { get; private set; }
-    public event Action OnHitObstacle;
-    public bool LockDirection { get; set; }
-    public bool LockMovement { get; set; }
-    public bool ForceForward { get; set; }
+    public event Action<Collider> OnHitObstacle;
 
     void Awake()
     {
@@ -25,17 +22,16 @@ public class CharacterMovement_iso : MonoBehaviour
         Initialise();
     }
 
-    Vector2 GetMovInput()
+    public void SetInput(Vector2 input)
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        return new Vector2(horizontal, vertical);
+        inputVector = input;
     }
-
-    void MoveCharacter()
+    public void MoveCharacterForward()
     {
-
-        inputVector = GetMovInput();
+        controller.Move(transform.forward * currentSpeed * Time.deltaTime);
+    }
+    public void MoveCharacter()
+    {
         Vector3 camForward = cameraTransform.forward;
         Vector3 camRight = cameraTransform.right;
 
@@ -46,35 +42,20 @@ public class CharacterMovement_iso : MonoBehaviour
         camRight.Normalize();
 
         // Movement direction
-        if (!LockDirection)
+        moveDirection = camForward * inputVector.y + camRight * inputVector.x;
+
+        if (moveDirection.magnitude > 0.1f)
         {
-            moveDirection = camForward * inputVector.y + camRight * inputVector.x;
+            Quaternion targetRotation;
 
-            if (moveDirection.magnitude > 0.1f)
-            {
-                Quaternion targetRotation;
+            targetRotation = Quaternion.LookRotation(moveDirection);
 
-                targetRotation = Quaternion.LookRotation(moveDirection);
-
-                transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                rotationSpeed * Time.deltaTime);
-            }
+            transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRotation,
+            rotationSpeed * Time.deltaTime);
         }
-        if (!LockMovement && ForceForward)
-        {
-            controller.Move(transform.forward * currentSpeed * Time.deltaTime);
-        }
-        else if (!LockMovement)
-        {
-            controller.Move(moveDirection * currentSpeed * Time.deltaTime);
-        }
-    }
-
-    void Update()
-    {
-        MoveCharacter();
+        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
     }
 
     void Initialise()
@@ -83,16 +64,15 @@ public class CharacterMovement_iso : MonoBehaviour
         {
             Debug.LogError("Camera Transform is not assigned in char_mov_iso.");
         }
-        LockMovement = false;
-        LockDirection = false;
-        LockMovement = false;
+        inputVector = Vector2.zero;
+        moveDirection = Vector3.zero;
         currentSpeed = moveSpeed;
         moveDirection = cameraTransform.forward;
     }
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         Debug.Log("char_mov -Collision with: " + hit.gameObject.name);
-        OnHitObstacle?.Invoke();
+        OnHitObstacle?.Invoke(hit.collider);
     }
     
     public void ModifySpeed(float multiplier)

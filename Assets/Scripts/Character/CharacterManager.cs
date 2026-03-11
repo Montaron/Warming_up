@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class CharacterManager : MonoBehaviour
 {
@@ -12,30 +14,26 @@ public class CharacterManager : MonoBehaviour
     private CharacterMovement_iso characterMov_iso;
     public CharacterStateType currentState { get; private set; }
 
+    private T FetchComponent<T>() where T : Component
+    {
+        var component = GetComponent<T>();
+        if (component == null)
+            Debug.LogWarning($"{typeof(T).Name} not found on {gameObject.name}");
+        return component;
+    }
+
     void Awake()
     {
-        stateMachine = GetComponent<CharacterStateMachine>();
-        if (stateMachine == null)
-        {
-            Debug.LogWarning("stateMachine not referenced");
-        }
-        inputHandler = GetComponent<InputHandler>();
-        if (inputHandler == null)
-        {
-            Debug.LogWarning("inputHandler not referenced");
-        }
-        characterCombat = GetComponent<CharacterCombat>();
-        if (characterCombat == null)
-        {
-            Debug.LogWarning("CharacterCombat not referenced");
-        }
+        stateMachine = FetchComponent<CharacterStateMachine>();
+        inputHandler = FetchComponent<InputHandler>();
+        characterCombat = FetchComponent<CharacterCombat>();
+        characterMov_iso = FetchComponent<CharacterMovement_iso>();
     }
     void Start()
     {
-        
+
     }
-    
-    // Update is called once per frame
+
     void Update()
     {
 
@@ -43,23 +41,58 @@ public class CharacterManager : MonoBehaviour
 
     private void OnEnable()
     {
-        stateMachine.OnStateChanged += UpdateCurrentState;
-        inputHandler.OnMoveInput += HandleMoveInput;
-        inputHandler.OnSpellRequested += HandleSpellRequested;
+        if (stateMachine != null)
+        {
+            stateMachine.OnStateChanged += UpdateCurrentState;
+        }
+        if (inputHandler != null)
+        {
+            inputHandler.OnMoveInput += HandleMoveInput;
+            inputHandler.OnSpellRequested += HandleSpellRequested;
+        }
+        if (characterCombat != null)
+        {
+            characterCombat.OnSpellEnded += HandleSpellEnded;
+        }
+    }
+
+    private void HandleSpellEnded(Spell_data data)
+    {
+        if (characterMov_iso.inputVector != Vector2.zero)
+        {
+            stateMachine.ChangeState(CharacterStateType.Running);
+        }
+        else
+        {
+            stateMachine.ChangeState(CharacterStateType.Iddle);
+        }
     }
 
     private void HandleSpellRequested(Spell_data data)
     {
-        if (currentState == CharacterStateType.Iddle)
+        if (characterCombat.spellRunning)
         {
-            stateMachine.ChangeState(CharacterStateType.Attacking);
-            characterCombat.CastSpellRequest(data);
+            characterCombat.TryInterruptSpell(data);
+            return;
+        }
+        else
+        {
+            if (data.castContext.Allows(currentState))
+            {
+                if (characterCombat.CastSpellRequest(data))
+                    stateMachine.ChangeState(CharacterStateType.Attacking);
+            }
         }
     }
 
     private void HandleMoveInput(Vector2 vector)
     {
-        Debug.Log("Received move input: " + vector);
+        characterMov_iso.SetInput(vector); //Give the vector
+        if (vector.magnitude > 0.1f && currentState == CharacterStateType.Iddle || currentState == CharacterStateType.Running
+            || (characterCombat.currentSpellData != null && characterCombat.currentSpellData.interruptableBy.HasFlag(isInterruptableBy.Movement)))
+        {
+            characterCombat.CancelCurrentSpell(SpellCancelBy.InputMovement);
+        }
     }
 
     private void OnDisable()
@@ -74,4 +107,4 @@ public class CharacterManager : MonoBehaviour
         Debug.Log("State Changed to :" + currentState.ToString());
     }
 
-} 
+}

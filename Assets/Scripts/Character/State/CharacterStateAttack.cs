@@ -16,6 +16,5 @@ public class CharacterStateAttack : CharacterState
 
     public override void HandleInput()
     {
-        stateMachine.ChangeState(stateMachine.previousState.stateType); // Return to previous state after attack
     }
 }

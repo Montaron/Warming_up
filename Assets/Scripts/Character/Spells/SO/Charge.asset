@@ -15,7 +15,15 @@ MonoBehaviour:
   spellName: Charge
   interruptableBy: 4
   castContext: 3
+  stateTransitionOnCast: 4
+  startClip: {fileID: 7400000, guid: 933c2581746b72e4ebaea0987e98c28a, type: 2}
+  loopClip: {fileID: 7400000, guid: 05a2e81fcb4f1c24eb3a001ce69f3b35, type: 2}
+  endClip: {fileID: 7400000, guid: 49dbccd3cf3d43a44b89c841e39ec962, type: 2}
+  animationTriggerStart: Charging
+  animationTriggerLoop: 
+  animationTriggerEnd: 
   speedMultiplierStart: 5
   speedMultiplierMax: 8
   timeToReachMaxMultiplier: 10
-  chargeDuration: 5
+  chargeDuration: 2
+  damage: 100

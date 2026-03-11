@@ -6,9 +6,10 @@ public class ChargeSpell_data : Spell_data
     public float speedMultiplierMax = 5f;
     public float timeToReachMaxMultiplier = 10f;
     public float chargeDuration = 5f;
+    public float damage = 100f;
 
-    public override ISpellPhase CreateSpellRuntime()
+    public override ISpell CreateSpellRuntime(GameObject caster, GameObject target)
     {
-        return new ChargeSpellRuntime(this);
+        return  new ChargeSpellRuntime(caster, this, target);
     }
 }
