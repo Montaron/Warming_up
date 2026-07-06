@@ -72,6 +72,7 @@ public class CharacterManager : MonoBehaviour
     {
         if (characterCombat.spellRunning)
         {
+            Debug.Log("Trying to interrupt");
             characterCombat.TryInterruptSpell(data);
             return;
         }

@@ -3,6 +3,7 @@ using System;
 public class SpellFateToken
 {
     public bool IsCanceled { get; private set; }
+    //public bool SkipPhase { get; private set; }
     public event Action<SpellCancelBy> OnSpellCanceled;
 
     public void Cancel(SpellCancelBy cancelBy)

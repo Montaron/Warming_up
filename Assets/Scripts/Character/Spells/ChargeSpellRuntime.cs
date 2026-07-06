@@ -7,6 +7,7 @@ public class ChargeSpellRuntime : BaseSpellRuntime
     public ChargeSpell_data charge_data { get; private set; }
     protected override bool loopLoopPhase => true;
     private GameObject target;
+    private float currentSpeedMultiplier = 5f;
 
     public ChargeSpellRuntime(GameObject caster, ChargeSpell_data data, GameObject target)
             : base(caster, data)
@@ -25,26 +26,21 @@ public class ChargeSpellRuntime : BaseSpellRuntime
         base.movement.OnHitObstacle += HandleObstacleHit;
         return true;
     }
-    public IEnumerator OnPhaseUpdate(GameObject caster)
+    protected override void OnLoopPhaseUpdate()
     {
-        float elapsedTime = 0f;
-        while (elapsedTime < charge_data.chargeDuration)
-        {
-            if (token.IsCanceled)
-                yield break;
-            float t = Mathf.Clamp01(elapsedTime / charge_data.timeToReachMaxMultiplier);
-            float speedMultiplier =
-                    Mathf.Lerp(charge_data.speedMultiplierStart, charge_data.speedMultiplierMax, t);
-            movement.ModifySpeed(speedMultiplier);
-            movement.MoveCharacterForward();
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
+        currentSpeedMultiplier = Mathf.MoveTowards(
+                    currentSpeedMultiplier,
+                    charge_data.speedMultiplierMax,
+                    charge_data.speedMultiplierMax / charge_data.timeToReachMaxMultiplier
+                        * Time.deltaTime);
+
+        movement.ModifySpeed(currentSpeedMultiplier);
+        movement.MoveCharacterForward();
     }
     public override void SpellEnd()
     {
-        base.movement.OnHitObstacle -= HandleObstacleHit;
-        base.movement.ResetSpeed();
+        movement.OnHitObstacle -= HandleObstacleHit;
+        movement.ResetSpeed();
     }
     public bool Validate(GameObject caster)
     {

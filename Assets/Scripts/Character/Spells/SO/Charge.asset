@@ -20,8 +20,8 @@ MonoBehaviour:
   loopClip: {fileID: 7400000, guid: 05a2e81fcb4f1c24eb3a001ce69f3b35, type: 2}
   endClip: {fileID: 7400000, guid: 49dbccd3cf3d43a44b89c841e39ec962, type: 2}
   animationTriggerStart: Charging
-  animationTriggerLoop: 
-  animationTriggerEnd: 
+  animationTriggerLoop: Charging_Loop
+  animationTriggerEnd: Charging_End
   speedMultiplierStart: 5
   speedMultiplierMax: 8
   timeToReachMaxMultiplier: 10

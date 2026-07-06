@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 public abstract class BaseSpellRuntime : ISpell
@@ -26,19 +27,19 @@ public abstract class BaseSpellRuntime : ISpell
     public IEnumerator StartSpell(GameObject caster)
     {
         // Start phase — play and wait for clip to finish
-        yield return PlayPhaseAndWait(data.animationTriggerStart, data.startClip, loopStartPhase);
-        if (token.IsCanceled) yield break;
+        yield return PlayPhase(data.animationTriggerStart, data.startClip, OnStartPhaseUpdate, loopStartPhase);
+        //if (token.IsCanceled) yield break;
 
         OnStartPhaseEnd();
 
         // Loop phase — play and wait for clip to finish
-        yield return PlayPhaseAndWait(data.animationTriggerLoop, data.loopClip, loopLoopPhase);
-        if (token.IsCanceled) yield break;
+        yield return PlayPhase(data.animationTriggerLoop, data.loopClip, OnLoopPhaseUpdate, loopLoopPhase);
+        //if (token.IsCanceled) yield break;
 
         OnLoopPhaseEnd();
 
         // End phase — play and wait for clip to finish
-        yield return PlayPhaseAndWait(data.animationTriggerEnd, data.endClip, loopEndPhase);
+        yield return PlayPhase(data.animationTriggerEnd, data.endClip, OnEndPhaseUpdate, loopEndPhase);
 
         OnEndPhaseEnd();
     }
@@ -54,29 +55,30 @@ public abstract class BaseSpellRuntime : ISpell
     // Wait for animation clip to finish
     // ─────────────────────────────────────────
 
-    private IEnumerator PlayPhaseAndWait(string trigger, AnimationClip clip, bool isLooping = false)
+    private IEnumerator PlayPhase(string trigger, AnimationClip clip, Action OnUpdate, bool isLooping = false)
     {
         if (string.IsNullOrEmpty(trigger) || clip == null) yield break;
 
         animator.SetTrigger(trigger);
-
+        Debug.Log($"Playing trigger {trigger}");
         // Wait one frame for Animator to transition
         yield return null;
-
+        // Wait for transition to fully complete before reading state
+        yield return new WaitUntil(() => !animator.IsInTransition(0));
         if (isLooping)
         {
             while (!token.IsCanceled)
-                yield return null; 
+            {
+                OnUpdate?.Invoke();
+                yield return null;
+            }
         }
         else
         {
-            float clipLength = clip.length;
-            float elapsed = 0f;
-
-            while (elapsed < clipLength)
+            while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f
+                 && !token.IsCanceled)
             {
-                if (token.IsCanceled) yield break;
-                elapsed += Time.deltaTime;
+                OnUpdate?.Invoke();
                 yield return null;
             }
         }
