@@ -27,19 +27,19 @@ public abstract class BaseSpellRuntime : ISpell
     public IEnumerator StartSpell(GameObject caster)
     {
         // Start phase — play and wait for clip to finish
-        yield return PlayPhase(data.animationTriggerStart, data.startClip, OnStartPhaseUpdate, loopStartPhase, data.startClipSpeedMultiplier);
+        yield return PlayPhase(data.animationTriggerStart, data.startClipStateName, OnStartPhaseUpdate, loopStartPhase, data.startClipSpeedMultiplier);
         //if (token.IsCanceled) yield break;
 
         OnStartPhaseEnd();
 
         // Loop phase — play and wait for clip to finish
-        yield return PlayPhase(data.animationTriggerLoop, data.loopClip, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
+        yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
         //if (token.IsCanceled) yield break;
 
         OnLoopPhaseEnd();
 
         // End phase — play and wait for clip to finish
-        yield return PlayPhase(data.animationTriggerEnd, data.endClip, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
+        yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
 
         OnEndPhaseEnd();
     }
@@ -58,20 +58,17 @@ public abstract class BaseSpellRuntime : ISpell
     // Wait for animation clip to finish
     // ─────────────────────────────────────────
 
-    private IEnumerator PlayPhase(string trigger, AnimationClip clip, Action OnUpdate, bool isLooping = false, float animSpeedMultiplier = 1f)
+    private IEnumerator PlayPhase(string trigger, string animationStateName, Action OnUpdate, bool isLooping = false, float animSpeedMultiplier = 1f)
     {
-        if (string.IsNullOrEmpty(trigger) || clip == null) yield break;
+        if (string.IsNullOrEmpty(trigger) || string.IsNullOrEmpty(animationStateName)) yield break;
 
-        animator.SetTrigger(trigger);
+        animator.Play(animationStateName, 0, 0f);
         animator.speed = animSpeedMultiplier; 
         // Debug.Log($"Playing trigger {trigger}");
         // Wait one frame for Animator to transition
         yield return null;
-        Debug.Log("Frame 1 passed");
         // Wait for transition to fully complete before reading state
-        yield return new WaitUntil(() => !animator.IsInTransition(0));
-        int currentState = animator.GetAnimatorTransitionInfo(0).nameHash;
-        Debug.Log("current state = " + currentState);
+        //yield return new WaitUntil(() => !animator.IsInTransition(0));
         Debug.Log("Transition done, entering try block" + animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
         try 
         {
@@ -86,9 +83,9 @@ public abstract class BaseSpellRuntime : ISpell
             else
             {
                 while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f
-                     && !token.IsCanceled)
+               && !token.IsCanceled
+               && animator.GetCurrentAnimatorStateInfo(0).IsName(animationStateName))
                 {
-                    Debug.Log($"Non-looping branch - normalizedTime: {animator.GetCurrentAnimatorStateInfo(0).normalizedTime}, calling OnUpdate");
                     OnUpdate?.Invoke();
                     yield return null;
                 }

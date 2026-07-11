@@ -55,7 +55,10 @@ public class CharacterMovement_iso : MonoBehaviour
             targetRotation,
             rotationSpeed * Time.deltaTime);
         }
+        moveDirection.Normalize();
+        Debug.Log("Move x = " + moveDirection.x + "move y = " + moveDirection.y + "Move z = " + moveDirection.z);
         controller.Move(moveDirection * currentSpeed * Time.deltaTime);
+        Debug.Log(controller.velocity.magnitude);
     }
 
     void Initialize()

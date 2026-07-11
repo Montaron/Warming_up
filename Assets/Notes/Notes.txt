@@ -1,5 +1,6 @@
 ###ToDo###
-make the charge start speed faster (init speed)
+make the charge start speed faster (init speed) good need to commit
+make the change for init speed equal to speed of char ? speed of char not normalized
 
 #Game Monolith#
     #GameManager
@@ -34,6 +35,7 @@ the BaseSpellRuntime implement an interface that :
 
 
     #others#
+search and replace in vscode ^(\s*)(.*Debug\.Log.*)$ -> 
 * next word under cursor # backward direction
 Search file in explorer : ctrl + p
 Search for text insides files : ctrl + shift + p
