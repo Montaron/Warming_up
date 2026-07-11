@@ -62,6 +62,6 @@ public class char_movement : MonoBehaviour
             rotationSpeed * Time.deltaTime);
         }
         // Move character
-        controller.Move(moveDirection * moveSpeed * Time.deltaTime * (isMovingBackward ? backwardSpeedMultiplier : 1f));
+        //controller.Move(moveDirection * moveSpeed * Time.deltaTime * (isMovingBackward ? backwardSpeedMultiplier : 1f));
     }
 }
