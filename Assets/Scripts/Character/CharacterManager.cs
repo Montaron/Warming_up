@@ -18,7 +18,7 @@ public class CharacterManager : MonoBehaviour
     {
         var component = GetComponent<T>();
         if (component == null)
-            Debug.LogWarning($"{typeof(T).Name} not found on {gameObject.name}");
+             Debug.LogWarning($"{typeof(T).Name} not found on {gameObject.name}");
         return component;
     }
 
@@ -72,7 +72,7 @@ public class CharacterManager : MonoBehaviour
     {
         if (characterCombat.spellRunning)
         {
-            Debug.Log("Trying to interrupt");
+            // Debug.Log("Trying to interrupt");
             characterCombat.TryInterruptSpell(data);
             return;
         }
@@ -105,7 +105,7 @@ public class CharacterManager : MonoBehaviour
     private void UpdateCurrentState(CharacterStateType type)
     {
         currentState = type;
-        Debug.Log("State Changed to :" + currentState.ToString());
+        // Debug.Log("State Changed to :" + currentState.ToString());
     }
 
 }

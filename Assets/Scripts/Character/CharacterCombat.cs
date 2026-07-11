@@ -135,7 +135,7 @@ public class CharacterCombat : MonoBehaviour
 
     private void spellFateToken_OnSpellCanceled(SpellCancelBy by)
     {
-        Debug.Log($"Spell {currentSpellName} canceled by {by}");
+        // Debug.Log($"Spell {currentSpellName} canceled by {by}");
     }
 
     public bool CastSpellRequest(Spell_data spellData)

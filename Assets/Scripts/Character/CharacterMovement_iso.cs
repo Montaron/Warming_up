@@ -19,7 +19,7 @@ public class CharacterMovement_iso : MonoBehaviour
     }
     void Start()
     {
-        Initialise();
+        Initialize();
     }
 
     public void SetInput(Vector2 input)
@@ -58,11 +58,11 @@ public class CharacterMovement_iso : MonoBehaviour
         controller.Move(moveDirection * currentSpeed * Time.deltaTime);
     }
 
-    void Initialise()
+    void Initialize()
     {
         if (cameraTransform == null)
         {
-            Debug.LogError("Camera Transform is not assigned in char_mov_iso.");
+            // Debug.LogError("Camera Transform is not assigned in char_mov_iso.");
         }
         inputVector = Vector2.zero;
         moveDirection = Vector3.zero;
@@ -71,7 +71,7 @@ public class CharacterMovement_iso : MonoBehaviour
     }
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        Debug.Log("char_mov -Collision with: " + hit.gameObject.name);
+        // Debug.Log("char_mov -Collision with: " + hit.gameObject.name);
         OnHitObstacle?.Invoke(hit.collider);
     }
     
@@ -79,7 +79,7 @@ public class CharacterMovement_iso : MonoBehaviour
     {
         currentSpeed = moveSpeed * multiplier;
     }
-   public void ResetSpeed()
+    public void ResetSpeed()
     {
         currentSpeed = moveSpeed;
     }

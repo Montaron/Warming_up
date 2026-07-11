@@ -1,9 +1,43 @@
-Faire l'input en fonction d'un event
-Faire communiquer le StateManager avec le CombatManager 
+###ToDo###
+make the charge start speed faster (init speed)
 
-Sort commence -> event trigger par CharacterCombat et recu par CharacterManager -> stateChange et event a la fin -> stateChange
+#Game Monolith#
+    #GameManager
+        #Character
+functions split in multiple class:
+-CharacterMovement that handle the character movement
+-CharacterAnimation that handle the character animation
+-CharacterCombat that handle the character combat
+*OnSpeedEnded
+-CharacterStateMachine that handle the state transition of the character
+-CharacterManager where character road cross, receive event from input, statemachine and characterCombat to change character behaviour (moving, casting,...) 
+    #Input
+-InputHandler handle the input and keybinds associated with spells and send change to the characterManager and prob UIManager next...
+*OnMoveInput, *OnSpellRequested
+    #Spell Error token
+-SpellFateToken is a class that can create a token object linked to a spell and if the token is cancelled to spell is stopped (BaseSpellRuntime) and trigger an event
+*OnSpellCancelled
 
-Enemy class contient un SO avec ses stats et une interface IDamageable qui contient une methode qui doit etre implementee par la classe qui souscrit a cette derniere.
-Quand une collision a lieu, le sort avec le movement component un event est trigger avec le collider et la charge peut declencher l'execution de la methode IDamageable
+track the event with *
+Create a spell Manager that can easily provide spell to the character
+8/7/26
+    #Spells architecture# 
+main class (abstract) is BaseSpellRuntime that has a constructor
+the class has a main coroutine method to run spell : StartSpell 
+This method will run Start, Loop and End coroutine
+the spell specificities is defined in Spell_data (SO) and his childs like ChargedSpell_data
+the Spell_data has a method to create the BaseSpellRuntime GameObject
+the BaseSpellRuntime implement an interface that :
+-demand validation (caster exists, animator present,...) through validate method
+-demand StartSpell implementation
+-has method that is called when spell is finisheed
 
-Si le sort cree lui meme un collider, on peut detecter les collisions dans la classe meme.
+
+    #others#
+* next word under cursor # backward direction
+Search file in explorer : ctrl + p
+Search for text insides files : ctrl + shift + p
+Toggle Maximize Editor Group : shit alt m
+Command Palette : Ctrl + shift + p
+7/7/26
+Animation end trop lente de la charge

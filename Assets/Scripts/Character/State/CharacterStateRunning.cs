@@ -9,7 +9,7 @@ public class CharacterStateRunning : CharacterState
     public override CharacterStateType stateType => CharacterStateType.Running;
     public override void Enter()
     {
-        Debug.Log(stateType);
+        // Debug.Log(stateType);
         stateMachine.Animator.SetFloat("Speed", player_mov.inputVector.magnitude); 
     }
 

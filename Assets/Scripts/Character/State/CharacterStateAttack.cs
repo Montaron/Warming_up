@@ -8,7 +8,7 @@ public class CharacterStateAttack : CharacterState
     public override CharacterStateType stateType => CharacterStateType.Attacking;
     public override void Enter()
     {
-        Debug.Log(stateType);
+        // Debug.Log(stateType);
     }
     public override void Exit()
     {

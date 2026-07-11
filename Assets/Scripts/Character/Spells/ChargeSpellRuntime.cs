@@ -19,12 +19,17 @@ public class ChargeSpellRuntime : BaseSpellRuntime
         if (data != null)
         { charge_data = data; }
     }
-
     public override bool Validate(GameObject caster, SpellFateToken token)
     {
         if (!base.Validate(caster, token)) return false;
         base.movement.OnHitObstacle += HandleObstacleHit;
         return true;
+    }
+
+    protected override void OnStartPhaseUpdate()
+    {
+        Debug.Log("Speed modifier by" + charge_data.speedIni);
+        movement.ModifySpeed(charge_data.speedIni);
     }
     protected override void OnLoopPhaseUpdate()
     {
@@ -63,7 +68,7 @@ public class ChargeSpellRuntime : BaseSpellRuntime
                 target = collider.gameObject,
             };
             damageable.TakeDamage(damageData);
-            Debug.Log($"{damageData.target.name} took {damageData.damage} from {damageData.attacker.name ?? "unknown"}");
+            // Debug.Log($"{damageData.target.name} took {damageData.damage} from {damageData.attacker.name ?? "unknown"}");
         }
         token.Cancel(SpellCancelBy.ObstacleHit);
     }

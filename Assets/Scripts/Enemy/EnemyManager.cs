@@ -26,7 +26,7 @@ public class EnemyManager : MonoBehaviour, IDamageable
 
     private void HandleZeroHealth()
     {
-        Debug.Log("Should be destroyed");
+        // Debug.Log("Should be destroyed");
         Destroy(this.gameObject);
     }
 }

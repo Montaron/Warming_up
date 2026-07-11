@@ -13,8 +13,16 @@ public abstract class Spell_data : ScriptableObject
 
     [Header("Animation Clips")]
     public AnimationClip startClip;
+    string startClipStateName;
     public AnimationClip loopClip;
+    string loopClipStateName;
     public AnimationClip endClip;
+    string endClipStateName;
+
+    [Header("Animation Clips Speed Multiplier")]
+    public float startClipSpeedMultiplier = 1f;
+    public float loopClipSpeedMultiplier = 1f;
+    public float endClipSpeedMultiplier = 1f;
 
     [Header("Animation Triggers")]
     public string animationTriggerStart;

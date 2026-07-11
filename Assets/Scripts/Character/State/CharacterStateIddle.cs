@@ -8,7 +8,7 @@ public class CharacterStateIddle : CharacterState
     public override CharacterStateType stateType => CharacterStateType.Iddle;
     public override void Enter()
     {
-        Debug.Log(stateType);
+        // Debug.Log(stateType);
         stateMachine.Animator.SetFloat("Speed", -1f); 
     }
     public override void Exit()

@@ -20,7 +20,7 @@ public class StatsComponent : MonoBehaviour
         stats_current.health -= damage;
         if (stats_current.health <= 0)
         {
-            Debug.Log(GetCurrentHealth());
+            // Debug.Log(GetCurrentHealth());
             Die();
         }
     }
