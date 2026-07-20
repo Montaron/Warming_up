@@ -1,5 +1,7 @@
 ###ToDo###
-put the shield on the hand while charging
+put the shield on the hand while charging // make a system for each spells has a way to handle weapon
+-> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class
+How spellData define the information ? LH (Left Hand) RH (Right hand) BH (Both hand) TH (Two_Hand) and then which kind of weapon (BOW ? TWO_HANDERS ? 1H_SWORD ? 2H_Arbalest ? 1H_SHIELD ?)
 
 #Game Monolith#
     #GameManager
@@ -34,6 +36,8 @@ the BaseSpellRuntime implement an interface that :
 
 
     #others#
+:only : remove all other windows with all scripts in it
+space + b + o : remove all other scripts
 search and replace in vscode ^(\s*)(.*Debug\.Log.*)$ -> 
 * next word under cursor # backward direction
 Search file in explorer : ctrl + p
