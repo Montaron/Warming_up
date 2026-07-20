@@ -23,9 +23,4 @@ public class WeaponHandler : MonoBehaviour
         greatSword.transform.localScale = new Vector3(0.01f, 0.017f, 0.01f);
 
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

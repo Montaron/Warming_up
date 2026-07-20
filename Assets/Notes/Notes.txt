@@ -1,6 +1,5 @@
 ###ToDo###
-make the charge start speed faster (init speed) good need to commit
-make the change for init speed equal to speed of char ? speed of char not normalized
+put the shield on the hand while charging
 
 #Game Monolith#
     #GameManager

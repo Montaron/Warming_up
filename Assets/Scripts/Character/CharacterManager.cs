@@ -88,7 +88,7 @@ public class CharacterManager : MonoBehaviour
 
     private void HandleMoveInput(Vector2 vector)
     {
-        characterMov_iso.SetInput(vector); //Give the vector
+        characterMov_iso.SetInput(vector);
         if (vector.magnitude > 0.1f && currentState == CharacterStateType.Iddle || currentState == CharacterStateType.Running
             || (characterCombat.currentSpellData != null && characterCombat.currentSpellData.interruptableBy.HasFlag(isInterruptableBy.Movement)))
         {
