@@ -88,3 +88,10 @@ merge if everything is ok
 ## Mermaid
 Install Mermaid support tool on VScode
 ctrl + shift + v to see preview mode
+
+#Objects
+used doted arrow for reference between objects
+used arrow for an object creating another one
+
+#Events
+type de name of the event with the type it carry between the arrow

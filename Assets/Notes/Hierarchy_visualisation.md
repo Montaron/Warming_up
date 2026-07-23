@@ -36,10 +36,10 @@ A --> H(InputHandler)
 A --> I(StatsComponent)
 
 %% CharacterManager communicate with :
-C --> G
-E --> G
-F --> G
-H --> G
+C -.-> G
+E -.-> G
+F -.-> G
+H -.-> G
 
 %% Spell System interaction
 G --> AA(BaseSpellRuntime)
