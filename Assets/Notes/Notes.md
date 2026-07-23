@@ -40,6 +40,7 @@ the BaseSpellRuntime implement an interface that :
 -has method that is called when spell is finished
 
 ## others
+zz : center on cursor
 :only : remove all other windows with all scripts in it
 space + b + o : remove all other scripts
 search and replace in vscode ^(\s*)(.*Debug\.Log.*)$ -> 
@@ -50,67 +51,40 @@ Toggle Maximize Editor Group : shit alt m
 Command Palette : Ctrl + shift + p
 7/7/26
 Animation end trop lente de la charge
+## vim
+in settings.json in order to have relative line in normal mode
+and real line number on insert mode
+`
+// Line numbers: absolute base, relative in normal mode, absolute in insert
+  "editor.lineNumbers": "on",
+  "vim.smartRelativeLine": true,
 
+  // To improve performance
+  "extensions.experimental.affinity": {
+    "vscodevim.vim": 1
+`
+move 10 line up : 10k
+move 10 line down : 10j
+move to the 10th line : 10G
+delete 10 line + the current one : d10j
+delete 10 line from the current one : 10dd
 ## git
-before pulling if I made change already
-git stash
-git pull origin main
-git stash pop  
+**before pulling if I made change already**
+`git stash`
+`git pull origin main`
+`git stash pop`
 
+**check new update on remote rep before pulling**
+fetch
+`git fetch`
+check for the new commit on the remote repo
+`git log HEAD..origin/main --oneline`
+check for files where change happen
+`git diff --stat HEAD..origin/main`
+check for merge conflict
+`git merge --no-commit --no-ff origin/main`
+merge if everything is ok
+`git merge`
 ## Mermaid
 Install Mermaid support tool on VScode
 ctrl + shift + v to see preview mode
-
-#Object_Interactions
-```mermaid
-flowchart TD
-
-%% Character in inspector Objects
-A(Character_Inspector)
-A --> B(WeaponHandler)
-A --> C(CharacterMovement)
-A --> D(CharacterAnimation)
-A --> E(CharacterCombat)
-A --> F(CharacterStateMachine)
-A --> G(CharacterManager)
-A --> H(InputHandler)
-A --> I(StatsComponent)
-
-%% CharacterManager communicate with :
-C --> G
-E --> G
-F --> G
-H --> G
-
-%% RED
-classDef red fill:#F09595,stroke:#791F1F,stroke-width:2px,color:#501313
-
-%% BLUE
-classDef light_blue fill:#a6dbf5,stroke:#0C447C,stroke-width:2px,color:#042C53,font-size:11px
-classDef medium_blue fill:#85B7EB,stroke:#0C447C,stroke-width:2px,color:#042C53,font-size:11px
-classDef high_blue fill:#2f70f5,stroke:#0C447C,stroke-width:2px,color:#042C53,font-size:11px
-
-%% TURQUOISE
-classDef turquoise fill:#12ccc6,stroke:#0C447C,stroke-width:2px,color:#042C53,font-size:11px
-
-%% GREEN
-classDef green fill:#72f542,stroke:#0C447C,stroke-width:2px,color:#042C53,font-size:11px
-class A light_blue
-class B light_blue
-class C light_blue
-class D light_blue
-class E light_blue
-class F light_blue
-class G light_blue
-class H light_blue
-class I light_blue
-```
-
-#Events
-```mermaid
-
-
-
-
-
-```
