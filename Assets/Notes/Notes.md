@@ -1,11 +1,32 @@
 # ToDo
+### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class
 How spellData define the information ? LH (Left Hand) RH (Right hand) BH (Both hand) TH (Two_Hand) and then which kind of weapon (BOW ? TWO_HANDERS ? 1H_SWORD ? 2H_Arbalest ? 1H_SHIELD ?)
-How to create a nice hierarchy of class and objects. Class are just patron to objects so maybe I just should track the object and reference to other objects
-Use Layer to make hierarchy
-Layer Event Object trigger event ? Which ? Where 
-Layer Objects how they interact and keep reference of each other
+1) Easy methods to swap weapon in WeaponHandler 
+2) In spell Data add a field to the corresponding weapon the spell is using
+3) When the spell is created in CharacterCombat send the data is send to the CharacterManager and with the data, send info to the weaponHandler to swap weapon
+### Sword and chield charge
+add the weapon change 
+### Arbalest weapon
+Create an arbalest in blender and a spell to fire with it
+Create an fire animation in blender (start loop end)
+
+### Core GamePlay
+How to make the stance dance fun -> how to make the player switch between them
+3 Stances -> 3 spells
+Change stance by using one spells or having control of which stance to go with specific binds ?
+In Eso we swap with a bind and each bar need to be swaped to rebuff or heal/dps and set bonus change
+
+I like the idea of having an ultimate and ultimate point that can be generated to use it for each stance (later on add the possibility to choice between multiple of them)
+The ultimate generation cant work like in eso because i want the combat to be fast paced with huge dmg. A charge can kill someone on the spot such 
+
+Stack of destabilisation that could lead to a 1sec stun and allow charge to 
+
+Maybe right now for proof of concept and code i could make one bar with charge, arbalest hit and a swing attack in 2hand with an ult if I can make that it means i can expand on more complex 
+combat system
+
+
 
 # Game Monolith
 ## GameManager
@@ -68,6 +89,7 @@ move 10 line down : 10j
 move to the 10th line : 10G
 delete 10 line + the current one : d10j
 delete 10 line from the current one : 10dd
+
 ## git
 **before pulling if I made change already**
 `git stash`
@@ -81,6 +103,8 @@ check for the new commit on the remote repo
 `git log HEAD..origin/main --oneline`
 check for files where change happen
 `git diff --stat HEAD..origin/main`
+check for deletion/addition in the file
+`git diff HEAD..origin/main -- Assets/Notes/Notes.md`
 check for merge conflict
 `git merge --no-commit --no-ff origin/main`
 merge if everything is ok
@@ -90,7 +114,8 @@ Install Mermaid support tool on VScode
 ctrl + shift + v to see preview mode
 
 #Objects
-used doted arrow for reference between objects
-used arrow for an object creating another one
+use doted arrow for reference between objects
+use arrow for an object creating another one
 
 #Events
+type de name of the event with the type it carry between the arrow
