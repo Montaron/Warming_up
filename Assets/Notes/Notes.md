@@ -1,4 +1,5 @@
 # ToDo
+hierarchy of scriptable object DataSpell
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class
@@ -6,11 +7,21 @@ How spellData define the information ? LH (Left Hand) RH (Right hand) BH (Both h
 1) Easy methods to swap weapon in WeaponHandler 
 2) In spell Data add a field to the corresponding weapon the spell is using
 3) When the spell is created in CharacterCombat send the data is send to the CharacterManager and with the data, send info to the weaponHandler to swap weapon
+
 ### Sword and chield charge
 add the weapon change 
+when the charge is stopped manually before touching something, make a stop animation that take a bit of time to make the char vulnerable ?
+if second end animation, add a list instead of one animation in the SO.
+
 ### Arbalest weapon
 Create an arbalest in blender and a spell to fire with it
 Create an fire animation in blender (start loop end)
+How to make an explosive animation ? F curve bezier
+
+### Create SFX & VFX
+Faire jouer les sons et veffets depuis le sort directement ou bien trigger un event a un SpellEffectCoordinator qui aura les refs des SFX et VFX
+SFX sur chaque object envoyant un son ? Non uniquement un singleton SFX.
+Faire des effets bandes dessinees pour la vitesse (hades), les impacts -> Claude peut generer des VFX ? Non mais peut aider a generer des shaders et des VFX graph et shuriken particle system
 
 ### Core GamePlay
 How to make the stance dance fun -> how to make the player switch between them
@@ -26,7 +37,7 @@ Stack of destabilisation that could lead to a 1sec stun and allow charge to
 Maybe right now for proof of concept and code i could make one bar with charge, arbalest hit and a swing attack in 2hand with an ult if I can make that it means i can expand on more complex 
 combat system
 
-
+Having ragdoll effect on deaths
 
 # Game Monolith
 ## GameManager
@@ -72,6 +83,10 @@ Toggle Maximize Editor Group : shit alt m
 Command Palette : Ctrl + shift + p
 7/7/26
 Animation end trop lente de la charge
+
+## vscode
+
+ctrl enter the file in explorer to open it in vertical split
 ## vim
 in settings.json in order to have relative line in normal mode
 and real line number on insert mode
@@ -116,6 +131,8 @@ ctrl + shift + v to see preview mode
 #Objects
 use doted arrow for reference between objects
 use arrow for an object creating another one
+Arrow From : Object Create --> Arrow To : This Object
 
 #Events
 type de name of the event with the type it carry between the arrow
+Arrow From : Object has a reference --> Arrow To : To This Object

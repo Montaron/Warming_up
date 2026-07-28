@@ -23,8 +23,14 @@ classDef yellowLight  fill:#FFF9C4,stroke:#FFF176,color:#5C4E00
 classDef yellowMedium fill:#FFEB3B,stroke:#FBC02D,color:#3D3200
 classDef yellowHigh   fill:#F9A825,stroke:#C77800,color:#fff
 %% ===== END PALETTE SNIPPET =====
+%% ===== START VAR SNIPPET ====
+AA(BaseSpellRuntime)
+AAA(SpellFateToken)
+SO_SpellData(SpellData)
 
-%% Character in inspector Objects
+%% ===== END VAR SNIPPET ====
+
+%% Objects creation hierarchy 
 A(Character_Inspector)
 A --> B(WeaponHandler)
 A --> C(CharacterMovement)
@@ -35,17 +41,18 @@ A --> G(CharacterManager)
 A --> H(InputHandler)
 A --> I(StatsComponent)
 
-%% CharacterManager communicate with :
-C -.-> G
-E -.-> G
-F -.-> G
-H -.-> G
+%% References to :
+G -.-> C
+G-.-> E
+G -.-> F
+G -.-> H
+AA -.-> AAA
 
 %% Spell System interaction
-G --> AA(BaseSpellRuntime)
+G --> AA
 
 %% SpellFateToken
-E --> AAA(SpellFakeToken)
+E --> AAA
 
 class A blueLight
 class B blueLight
@@ -72,5 +79,4 @@ C(CharacterMovement) -- OnHitObstacle<Collider> --> D(ChargeSpellRuntime)
 E(CharacterCombat) -- OnSpellEnded<Spell_data> --> B
 
 F(SpellFateToken) --  OnSpellCanceled<SpellCancelBy> --> E
-
 ```
