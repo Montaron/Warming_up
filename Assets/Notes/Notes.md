@@ -136,3 +136,9 @@ Arrow From : Object Create --> Arrow To : This Object
 #Events
 type de name of the event with the type it carry between the arrow
 Arrow From : Object has a reference --> Arrow To : To This Object
+
+## Blender
+Save as .fbx apply all transform ctrl + a
+To import new animation import the whole character and ctrl + d to duplicate in Unity. Now i have animation detached from the character and usable in Unity
+But i have to keep the model, so I want to clean up by having one model and not 10 for each new animations
+I need one fbx file with an avatar or generic avatar assigned to the Animator. One i have make a .anim (ctrl + d) of all the animation in the fbx i can discard them (animation onglet dont import animation) 1 mesh 1 avatar and the animations
