@@ -24,59 +24,63 @@ classDef yellowMedium fill:#FFEB3B,stroke:#FBC02D,color:#3D3200
 classDef yellowHigh   fill:#F9A825,stroke:#C77800,color:#fff
 %% ===== END PALETTE SNIPPET =====
 %% ===== START VAR SNIPPET ====
-AA(BaseSpellRuntime)
-AAA(SpellFateToken)
-SO_SpellData(SpellData)
+SpellRunTime(BaseSpellRuntime)
+SpellFateToken(SpellFateToken)
+SO_SpellData(SO_SpellData)
 
 %% ===== END VAR SNIPPET ====
 
 %% Objects creation hierarchy 
-A(Character_Inspector)
-A --> B(WeaponHandler)
-A --> C(CharacterMovement)
-A --> D(CharacterAnimation)
-A --> E(CharacterCombat)
-A --> F(CharacterStateMachine)
-A --> G(CharacterManager)
-A --> H(InputHandler)
-A --> I(StatsComponent)
+CharacterInspector(Character_Inspector)
+CharacterInspector --> WeaponHandler(WeaponHandler)
+CharacterInspector --> CharacterMovement(CharacterMovement)
+CharacterInspector --> CharacterAnimation(CharacterAnimation)
+CharacterInspector --> CharacterCombat(CharacterCombat)
+CharacterInspector --> CharacterStateMachine(CharacterStateMachine)
+CharacterInspector --> CharacterStateManager(CharacterManager)
+CharacterInspector --> InputHandler(InputHandler)
+CharacterInspector --> StatsComponent(StatsComponent)
 
 %% References to :
-G -.-> C
-G-.-> E
-G -.-> F
-G -.-> H
-AA -.-> AAA
+CharacterStateManager -.-> CharacterMovement
+CharacterStateManager-.-> CharacterCombat
+CharacterStateManager -.-> CharacterStateMachine
+CharacterStateManager -.-> InputHandler
+SpellRunTime -.-> SpellFateToken
 
 %% Spell System interaction
-G --> AA
+InputHandler --> SO_SpellData
+SO_SpellData -- 0 --> SpellRunTime
+CharacterStateManager -- 1 --> SpellRunTime
+CharacterCombat -.-> SpellRunTime
 
 %% SpellFateToken
-E --> AAA
+CharacterCombat --> SpellFateToken
 
-class A blueLight
-class B blueLight
-class C blueLight
-class D blueLight
-class E blueLight
-class F blueLight
-class G blueLight
-class H blueLight
-class I blueLight
+class CharacterInspector blueLight
+class WeaponHandler blueLight
+class CharacterMovement blueLight
+class CharacterAnimation blueLight
+class CharacterCombat blueLight
+class CharacterStateMachine blueLight
+class CharacterStateManager blueLight
+class InputHandler blueLight
+class StatsComponent blueLight
 
-class AA redLight
+class SpellRunTime redLight
+class SO_SpellData redLight
 
-class AAA yellowLight
+class SpellFateToken yellowLight
 ```
 
 #Events
 ```mermaid
 flowchart TD
-A(InputHandler) -- OnMoveInput<Vector2> --> B(CharacterManager)
-A(InputHandler) -- OnSpellRequested<Spell_data> --> B(CharacterManager)
+CharacterInspector(InputHandler) -- OnMoveInput<Vector2> --> WeaponHandler(CharacterManager)
+CharacterInspector(InputHandler) -- OnSpellRequested<Spell_data> --> WeaponHandler(CharacterManager)
 
-C(CharacterMovement) -- OnHitObstacle<Collider> --> D(ChargeSpellRuntime)
-E(CharacterCombat) -- OnSpellEnded<Spell_data> --> B
+CharacterMovement(CharacterMovement) -- OnHitObstacle<Collider> --> CharacterAnimation(ChargeSpellRuntime)
+CharacterCombat(CharacterCombat) -- OnSpellEnded<Spell_data> --> WeaponHandler
 
-F(SpellFateToken) --  OnSpellCanceled<SpellCancelBy> --> E
+CharacterStateMachine(SpellFateToken) --  OnSpellCanceled<SpellCancelBy> --> CharacterCombat
 ```

@@ -1,5 +1,9 @@
 # ToDo
 hierarchy of scriptable object DataSpell
+Check on the BaseSpellRuntime if we cant cut the action loop when the token is cancelled earlier
+if the token is cancelled, it send an event but action can trigger coroutine (even for some frames) before it stops
+whats the purpose of the StateMachine ? For stuns ?
+composable effect system in additon to the SpellData, to add easy damage reduction, heal, status effects to the spell without having to create them each time
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class
@@ -62,6 +66,7 @@ Create a spell Manager that can easily provide spell to the character
 8/7/26
 ## Spells architecture
 main class (abstract) is BaseSpellRuntime that has a constructor
+this class is created by the SO dataSpell that has a method to call the constructor. 
 the class has a main coroutine method to run spell : StartSpell 
 This method will run Start, Loop and End coroutine
 the spell specificities is defined in Spell_data (SO) and his childs like ChargedSpell_data
@@ -130,8 +135,11 @@ ctrl + shift + v to see preview mode
 
 #Objects
 use doted arrow for reference between objects
-use arrow for an object creating another one
+use arrow annoted with 1 for an object creating another one (start of the chain that lead to the object creation like the CharacterManager call for the creation of a spell)
+use arrow annoted with 0 for object creating another indirectly (the end of the chain like one object call the constructor of another)
+use thin arrow for the chain itself if necessary
 Arrow From : Object Create --> Arrow To : This Object
+
 
 #Events
 type de name of the event with the type it carry between the arrow
