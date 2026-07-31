@@ -2,7 +2,7 @@
 hierarchy of scriptable object DataSpell
 Check on the BaseSpellRuntime if we cant cut the action loop when the token is cancelled earlier
 if the token is cancelled, it send an event but action can trigger coroutine (even for some frames) before it stops
-whats the purpose of the StateMachine ? For stuns ?
+whats the purpose of the StateMachine ? For stuns ? -> Lock the character when animation is playing
 composable effect system in additon to the SpellData, to add easy damage reduction, heal, status effects to the spell without having to create them each time
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
@@ -16,12 +16,16 @@ How spellData define the information ? LH (Left Hand) RH (Right hand) BH (Both h
 add the weapon change 
 when the charge is stopped manually before touching something, make a stop animation that take a bit of time to make the char vulnerable ?
 if second end animation, add a list instead of one animation in the SO.
-
+In the scenario of two character charging at each other, the damage could be dependant 
 ### Arbalest weapon
 Create an arbalest in blender and a spell to fire with it
 Create an fire animation in blender (start loop end)
 How to make an explosive animation ? F curve bezier
-
+Input can be hold to increase the damage -> wind up animation wind up end animation
+Add that logic in the Loop coroutine of the Spell class
+Interaction between the InputHandler and the Spell execution ?
+press -> start hold ? loop wind up use getkeydown and getkeyup to send a bool event to the CharacterManager and when its false interrupt the loop coroutine. How ? Need to have enum for windup type spell
+when winding up using a move keybind should interupt the spell and not trigger the fire
 ### Create SFX & VFX
 Faire jouer les sons et veffets depuis le sort directement ou bien trigger un event a un SpellEffectCoordinator qui aura les refs des SFX et VFX
 SFX sur chaque object envoyant un son ? Non uniquement un singleton SFX.
@@ -37,11 +41,14 @@ I like the idea of having an ultimate and ultimate point that can be generated t
 The ultimate generation cant work like in eso because i want the combat to be fast paced with huge dmg. A charge can kill someone on the spot such 
 
 Stack of destabilisation that could lead to a 1sec stun and allow charge to 
+In the continuation of this idea, the should could block 50dmg but if the shield block more than that amount the character is stun (the stun duration could be dependant of that that surplus blocked)
 
 Maybe right now for proof of concept and code i could make one bar with charge, arbalest hit and a swing attack in 2hand with an ult if I can make that it means i can expand on more complex 
 combat system
 
 Having ragdoll effect on deaths
+
+Character could have multiple live to make the combat more interesting (when killing some one else took their soul ? visual looking skeleton aura red, blue etc)
 
 # Game Monolith
 ## GameManager
@@ -129,6 +136,8 @@ check for merge conflict
 `git merge --no-commit --no-ff origin/main`
 merge if everything is ok
 `git merge`
+check specifil file commit history
+`git log -p -- Assets/Notes/Notes.md | vim -`
 ## Mermaid
 Install Mermaid support tool on VScode
 ctrl + shift + v to see preview mode
