@@ -164,21 +164,43 @@ public class CharacterCombat : MonoBehaviour
         ResetSpell();
     }
 
-    public bool TryInterruptSpell(Spell_data spellData)
+    public bool TryInterruptSpell(Spell_data spellData, isInterruptableBy interrupt_reason)
     {
         if (spellRunning)
         {
-            if (currentSpellName == spellData.spellName && spellData.interruptableBy == isInterruptableBy.Recast)
+            if (currentSpellName == spellData.spellName && spellData.interruptableBy.HasFlag(interrupt_reason))
             {
-                CancelCurrentSpell(SpellCancelBy.InputSpell);
+                CancelCurrentSpell(interrupt_reason);
                 return true;
             }
         }
         return false;
     }
-    public void CancelCurrentSpell(SpellCancelBy spellCancelBy)
+    public bool TryInterruptCurrentSpell(isInterruptableBy interrupt_reason)
     {
-        if (currentSpell != null && !spellFateToken.IsCanceled)
-            spellFateToken.Cancel(spellCancelBy);
+        if (spellRunning)
+        {
+            if (currentSpellData.interruptableBy.HasFlag(interrupt_reason))
+            {
+                CancelCurrentSpell(interrupt_reason);
+                return true;
+            }
+        }
+        return false;
+    }
+    private void CancelCurrentSpell(isInterruptableBy interrupt_reason)
+    {
+        if (currentSpell == null || spellFateToken.IsCanceled) return;
+
+        SpellCancelBy spellCancelBy = interrupt_reason switch
+        {
+            isInterruptableBy.KeyDown => SpellCancelBy.keyDown,
+            isInterruptableBy.KeyUp => SpellCancelBy.KeyUp,
+            isInterruptableBy.Movement => SpellCancelBy.MovementKey,
+            isInterruptableBy.Stun => SpellCancelBy.Stun,
+            isInterruptableBy.EnnemyHit => SpellCancelBy.EnemyHit,
+            _ => SpellCancelBy.None
+        };
+        spellFateToken.Cancel(spellCancelBy);
     }
 }

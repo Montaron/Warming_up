@@ -10,6 +10,7 @@ public abstract class Spell_data : ScriptableObject
     public isInterruptableBy interruptableBy;
     public CastableContext castContext;
     public CharacterStateType stateTransitionOnCast;
+    public SpellCastType spellCastType;
 
     [Header("Animation Clips")]
     public AnimationClip startClip;
@@ -57,11 +58,26 @@ public static class CastContextExtensions
         return allowedContexts.HasFlag(current);
     }
 }
+public enum WeaponType
+{
+    None,
+    Xbow,
+    Two_Hander,
+    Shield,
+}
 [Flags]
 public enum isInterruptableBy
 {
     None = 0,
     Movement = 1,
     Stun = 2,
-    Recast = 4,
+    KeyDown = 4,
+    KeyUp = 8,
+    EnnemyHit = 16,
+}
+public enum SpellCastType
+{
+    Instant,    // startClip -> endClip immediately, ignores hold/release entirely
+    Charged,    // startClip -> loopClip (repeats while held) -> endClip plays on key release
+    Channeled   // loopClip repeats continuously, effect ticks each loop, ends on release or interrupt
 }

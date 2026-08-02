@@ -49,11 +49,18 @@ public class CharacterManager : MonoBehaviour
         {
             inputHandler.OnMoveInput += HandleMoveInput;
             inputHandler.OnSpellRequested += HandleSpellRequested;
+            inputHandler.OnSpellGetKeyUp += HandleSpellGetKeyUp;
         }
         if (characterCombat != null)
         {
             characterCombat.OnSpellEnded += HandleSpellEnded;
         }
+    }
+
+    private void HandleSpellGetKeyUp(Spell_data data)
+    {
+        Debug.Log("KEY UP");
+        characterCombat.TryInterruptSpell(data, isInterruptableBy.KeyUp);
     }
 
     private void HandleSpellEnded(Spell_data data)
@@ -72,14 +79,15 @@ public class CharacterManager : MonoBehaviour
     {
         if (characterCombat.spellRunning)
         {
-            // Debug.Log("Trying to interrupt");
-            characterCombat.TryInterruptSpell(data);
+            Debug.Log("Trying to interrupt");
+            characterCombat.TryInterruptSpell(data, isInterruptableBy.KeyDown);
             return;
         }
         else
         {
             if (data.castContext.Allows(currentState))
             {
+                //Add switch to casting
                 if (characterCombat.CastSpellRequest(data))
                     stateMachine.ChangeState(CharacterStateType.Attacking);
             }
@@ -92,7 +100,7 @@ public class CharacterManager : MonoBehaviour
         if (vector.magnitude > 0.1f && currentState == CharacterStateType.Iddle || currentState == CharacterStateType.Running
             || (characterCombat.currentSpellData != null && characterCombat.currentSpellData.interruptableBy.HasFlag(isInterruptableBy.Movement)))
         {
-            characterCombat.CancelCurrentSpell(SpellCancelBy.InputMovement);
+            characterCombat.TryInterruptCurrentSpell(isInterruptableBy.Movement);
         }
     }
 

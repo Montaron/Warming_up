@@ -1,9 +1,10 @@
 # ToDo
-hierarchy of scriptable object DataSpell
-Check on the BaseSpellRuntime if we cant cut the action loop when the token is cancelled earlier
+attach weapon with weaponHandler
+Link spell with weapon apparition
+create a projectile for the fire spell
 if the token is cancelled, it send an event but action can trigger coroutine (even for some frames) before it stops
-whats the purpose of the StateMachine ? For stuns ? -> Lock the character when animation is playing
 composable effect system in additon to the SpellData, to add easy damage reduction, heal, status effects to the spell without having to create them each time
+Charge need to be stopped and maybe two end animation or skip end animation totally so i need a way to exit coroutine entirely
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class
@@ -26,12 +27,16 @@ Add that logic in the Loop coroutine of the Spell class
 Interaction between the InputHandler and the Spell execution ?
 press -> start hold ? loop wind up use getkeydown and getkeyup to send a bool event to the CharacterManager and when its false interrupt the loop coroutine. How ? Need to have enum for windup type spell
 when winding up using a move keybind should interupt the spell and not trigger the fire
+1. Spell is hold -> loop animation -> keyUp -> endAnimation -> trigger a projectile -> go back to iddle
+2. Spell is hold -> Movement key is pressed -> loopAnimation is canceled -> no end Animation back to iddle
+need a fast exit trigger that works for all spells
 ### Create SFX & VFX
 Faire jouer les sons et veffets depuis le sort directement ou bien trigger un event a un SpellEffectCoordinator qui aura les refs des SFX et VFX
 SFX sur chaque object envoyant un son ? Non uniquement un singleton SFX.
 Faire des effets bandes dessinees pour la vitesse (hades), les impacts -> Claude peut generer des VFX ? Non mais peut aider a generer des shaders et des VFX graph et shuriken particle system
 
 ### Core GamePlay
+when mousebutton 1 is hold the character could be oriented toward the cursor to make targetting easier ?
 How to make the stance dance fun -> how to make the player switch between them
 3 Stances -> 3 spells
 Change stance by using one spells or having control of which stance to go with specific binds ?
@@ -99,7 +104,7 @@ Animation end trop lente de la charge
 ## vscode
 
 ctrl enter the file in explorer to open it in vertical split
-## vim
+## vim & VScode
 in settings.json in order to have relative line in normal mode
 and real line number on insert mode
 `
@@ -116,6 +121,8 @@ move 10 line down : 10j
 move to the 10th line : 10G
 delete 10 line + the current one : d10j
 delete 10 line from the current one : 10dd
+
+mousehove to see whats the reason the code is underlined : space tab
 
 ## git
 **before pulling if I made change already**

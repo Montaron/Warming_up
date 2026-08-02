@@ -1213,6 +1213,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: skeleton_model
       objectReference: {fileID: 0}
+    - target: {fileID: 5319104385797003712, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
+      propertyPath: keybinds.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319104385797003712, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
+      propertyPath: keybinds.Array.data[1].key
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319104385797003712, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
+      propertyPath: keybinds.Array.data[1].spellData
+      value: 
+      objectReference: {fileID: 11400000, guid: 712f8d52dee8af447b683597fd729bdd, type: 2}
     - target: {fileID: 5319104385797003716, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
       propertyPath: cameraTransform
       value: 

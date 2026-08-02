@@ -18,6 +18,22 @@ public class xbowFireSpellRuntime : BaseSpellRuntime
         if (data != null)
         { xbowfire_data = data; }
     }
+    public override IEnumerator StartSpell(GameObject caster)
+    {
+        // Loop phase — play and wait for clip to finish
+        yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
+
+        OnLoopPhaseEnd();
+        if (token.IsCanceled && token.spellCancelBy == SpellCancelBy.MovementKey)
+        {
+            animator.SetTrigger("Exit_Loop");
+            yield break;
+        }
+        // End phase — play and wait for clip to finish
+        yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
+
+        OnEndPhaseEnd();
+    }
     public override bool Validate(GameObject caster, SpellFateToken token)
     {
         if (!base.Validate(caster, token)) return false;
@@ -32,11 +48,6 @@ public class xbowFireSpellRuntime : BaseSpellRuntime
     }
     public bool Validate(GameObject caster)
     {
-        if (caster.TryGetComponent(out CharacterMovement_iso movement))
-        {
-            this.movement = movement;
-            return true;
-        }
-        return false;
+        return  true;
     }
 }

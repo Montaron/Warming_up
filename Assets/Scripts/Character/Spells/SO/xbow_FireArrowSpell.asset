@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de983f8693c0bc147a697f3e2dbdbcee, type: 3}
+  m_Name: xbow_FireArrowSpell
+  m_EditorClassIdentifier: 
+  spellName: xbowFire
+  interruptableBy: 11
+  castContext: 3
+  stateTransitionOnCast: 4
+  spellCastType: 1
+  startClip: {fileID: 0}
+  startClipStateName: 
+  loopClip: {fileID: 7400000, guid: a469dc4c356cc9049a4b9ad0720cf850, type: 2}
+  loopClipStateName: Shoot_start
+  endClip: {fileID: 7400000, guid: 4fa3885dd1c1a634495eb7141eea7121, type: 2}
+  endClipStateName: Shoot_end
+  startClipSpeedMultiplier: 1
+  loopClipSpeedMultiplier: 1
+  endClipSpeedMultiplier: 1
+  animationTriggerStart: 
+  animationTriggerLoop: Xbow_Loop
+  animationTriggerEnd: Xbow_End
+  damage: 100
+  projectile_speed: 1
+  projectilePrefab: {fileID: 0}

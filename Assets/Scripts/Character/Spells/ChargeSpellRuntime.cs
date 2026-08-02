@@ -19,6 +19,29 @@ public class ChargeSpellRuntime : BaseSpellRuntime
         if (data != null)
         { charge_data = data; }
     }
+    public override IEnumerator StartSpell(GameObject caster)
+    {
+        // Start phase — play and wait for clip to finish
+        yield return PlayPhase(data.animationTriggerStart, data.startClipStateName, OnStartPhaseUpdate, loopStartPhase, data.startClipSpeedMultiplier);
+        //if (token.IsCanceled) yield break;
+
+        OnStartPhaseEnd();
+
+        // Loop phase — play and wait for clip to finish
+        yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
+        if (token.IsCanceled && token.spellCancelBy == SpellCancelBy.keyDown) 
+        {
+            animator.SetTrigger("Exit_Loop");
+            yield break;
+        }
+
+        OnLoopPhaseEnd();
+
+        // End phase — play and wait for clip to finish
+        yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
+
+        OnEndPhaseEnd();
+    }
     public override bool Validate(GameObject caster, SpellFateToken token)
     {
         if (!base.Validate(caster, token)) return false;

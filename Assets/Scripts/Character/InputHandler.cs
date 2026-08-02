@@ -9,6 +9,7 @@ public class InputHandler : MonoBehaviour
     private Vector2 lastInput;
     public event Action<Vector2> OnMoveInput;
     public event Action<Spell_data> OnSpellRequested;
+    public event Action<Spell_data> OnSpellGetKeyUp;
 
     void Awake()
     {
@@ -28,6 +29,10 @@ public class InputHandler : MonoBehaviour
             if (Input.GetKeyDown(key))
             {
                 OnSpellRequested?.Invoke(spell);
+            }
+            if (Input.GetKeyUp(key))
+            {
+                OnSpellGetKeyUp.Invoke(spell);
             }
         }
     }

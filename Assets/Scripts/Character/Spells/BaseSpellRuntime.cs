@@ -24,7 +24,7 @@ public abstract class BaseSpellRuntime : ISpell
         movement = caster.GetComponent<CharacterMovement_iso>();
     }
 
-    public IEnumerator StartSpell(GameObject caster)
+    public virtual IEnumerator StartSpell(GameObject caster)
     {
         // Start phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerStart, data.startClipStateName, OnStartPhaseUpdate, loopStartPhase, data.startClipSpeedMultiplier);
@@ -34,7 +34,6 @@ public abstract class BaseSpellRuntime : ISpell
 
         // Loop phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
-        //if (token.IsCanceled) yield break;
 
         OnLoopPhaseEnd();
 
@@ -58,7 +57,7 @@ public abstract class BaseSpellRuntime : ISpell
     // Wait for animation clip to finish
     // ─────────────────────────────────────────
 
-    private IEnumerator PlayPhase(string trigger, string animationStateName, Action OnUpdate, bool isLooping = false, float animSpeedMultiplier = 1f)
+    protected IEnumerator PlayPhase(string trigger, string animationStateName, Action OnUpdate, bool isLooping = false, float animSpeedMultiplier = 1f)
     {
         if (string.IsNullOrEmpty(trigger) || string.IsNullOrEmpty(animationStateName)) yield break;
 
