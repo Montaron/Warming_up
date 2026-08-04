@@ -73,6 +73,16 @@ class SO_SpellData redLight
 class SpellFateToken yellowLight
 ```
 
+#Combat Logic
+```mermaid
+flowchart TD
+InputHandler(InputHandler) -- OnMoveInput<Vector2> --> CharacterManager(CharacterManager)
+InputHandler(InputHandler) -- OnSpellRequested<Spell_data> --> CharacterManager(CharacterManager)
+CharacterManager -- HandleSpellRequest --> CharacterCombat(CharacterCombat)
+CharacterCombat -- TryInterruptSpell / CastSpellRequest --> BaseSpellRuntime(BaseSpellRuntime) 
+BaseSpellRuntime -- event enum SpellPhase --> CharacterCombat
+CharacterCombat -- event request StateChange --> CharacterManager
+```
 #Events
 ```mermaid
 flowchart TD

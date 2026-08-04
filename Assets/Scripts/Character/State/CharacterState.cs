@@ -26,6 +26,6 @@ public enum CharacterStateType
     Running,
     Stunned,
     Attacking,
-    Casting,
+    Channeling,
 }
 

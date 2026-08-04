@@ -9,6 +9,13 @@ When moving and starting to shoot i notice that the animation play but it is int
 Channeled spell have a ImmuneFromMovement time, when a spell is started the CharacterCombat track the time elapsed. Movement can only interrupt the spell if the timer > ImmuneFromMovement
 orientation while channeling
 Create a global cd
+Add a channeled state to change character orientation
+Add two things : -GCD (CharacterCombat), UninterruptableTimerBy enum + Time (SpellData or BaseSpellRuntime or Both)
+CharacterCombat need to know when the channeling has ended so the state change Spell send event -> CharacterCombat recieve it and send an event to change state in StateManager
+I think i have to make an enum CombatState -> SpellStart -> channeling or attacking -> if channeling change to attacking when its done -> if interrupted change to iddle or running
+enum CombatState : None, (spellended), Spell_Started, SPell_Channeling, LoopingPhase_Start, StartPhase_Enter, StartPhase_End
+put event for each phase is the BaseSpell -> One event and 1enum for each phase, characterCombat Request change state
+CharacterManager should need an CharacterCombatPhaseHandler to deal with it 
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class

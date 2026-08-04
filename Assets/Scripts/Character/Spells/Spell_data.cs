@@ -39,7 +39,7 @@ public enum CastableContext
     Iddle = 1,
     Running = 2,
     Stunned = 4,
-    Casting = 8,
+    Channeling = 8,
 }
 public static class CastContextExtensions
 {
@@ -51,7 +51,7 @@ public static class CastContextExtensions
             CharacterStateType.Iddle    => CastableContext.Iddle,
             CharacterStateType.Running => CastableContext.Running,
             CharacterStateType.Stunned => CastableContext.Stunned,
-            CharacterStateType.Casting => CastableContext.Casting,
+            CharacterStateType.Channeling => CastableContext.Channeling,
             _ => CastableContext.None
         };
 
@@ -75,6 +75,19 @@ public enum isInterruptableBy
     KeyUp = 8,
     EnnemyHit = 16,
 }
+
+[Flags]
+public enum UnInterruptableTimerBy
+{
+    None = 0,
+    Movement = 1,
+    Stun = 2,
+    KeyDown = 4,
+    KeyUp = 8,
+    EnnemyHit = 16,
+}
+public float UnInterruptableTimer = 0f;
+
 public enum SpellCastType
 {
     Instant,    // startClip -> endClip immediately, ignores hold/release entirely

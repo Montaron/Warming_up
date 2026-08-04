@@ -23,11 +23,13 @@ public class CharacterStateMachine : MonoBehaviour
         idleState = new CharacterStateIddle(this);
         runningState = new CharacterStateRunning(this);
         attackingState = new CharacterStateAttack(this);
+        ChannelingState = new CharacterStateChanneling(this);
         stateMap = new Dictionary<CharacterStateType, CharacterState>
         {
             { idleState.stateType, idleState },
             { runningState.stateType, runningState },
-            { attackingState.stateType, attackingState }
+            { attackingState.stateType, attackingState },
+            { channelingState.stateType, channelingState }
         };
 
     }
