@@ -5,6 +5,10 @@ create a projectile for the fire spell
 if the token is cancelled, it send an event but action can trigger coroutine (even for some frames) before it stops
 composable effect system in additon to the SpellData, to add easy damage reduction, heal, status effects to the spell without having to create them each time
 Charge need to be stopped and maybe two end animation or skip end animation totally so i need a way to exit coroutine entirely
+When moving and starting to shoot i notice that the animation play but it is interrupted a millisec after because the movement key is hold at the same time. I need to think of a mecanisme that interupt the moving for some time when the shoot key is triggered. 
+Channeled spell have a ImmuneFromMovement time, when a spell is started the CharacterCombat track the time elapsed. Movement can only interrupt the spell if the timer > ImmuneFromMovement
+orientation while channeling
+Create a global cd
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class

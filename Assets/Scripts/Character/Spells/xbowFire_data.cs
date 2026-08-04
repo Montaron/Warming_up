@@ -1,4 +1,5 @@
 using UnityEngine;
+
 [CreateAssetMenu(fileName = "FireArrowSpell", menuName = "New FireArrow Spell")]
 public class xbowFire_data : Spell_data
 {

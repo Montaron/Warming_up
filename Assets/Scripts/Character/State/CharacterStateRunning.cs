@@ -20,7 +20,7 @@ public class CharacterStateRunning : CharacterState
     public override void HandleInput()
     {
         player_mov.MoveCharacter();
-        if (player_mov.inputVector.magnitude == 0)
+        if (player_mov.inputVector.magnitude <= 0.1f)
         {
             stateMachine.ChangeState(CharacterStateType.Iddle);
         } 

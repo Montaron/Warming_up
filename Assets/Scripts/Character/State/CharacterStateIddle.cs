@@ -10,6 +10,7 @@ public class CharacterStateIddle : CharacterState
     {
         // Debug.Log(stateType);
         stateMachine.Animator.SetFloat("Speed", -1f); 
+        player_mov.OrientCharacter();
     }
     public override void Exit()
     {
@@ -17,6 +18,7 @@ public class CharacterStateIddle : CharacterState
 
     public override void HandleInput()
     {
+        player_mov.OrientCharacter();
         if (player_mov.inputVector.magnitude > 0.1f)
         {
             stateMachine.ChangeState(CharacterStateType.Running); // Placeholder for actual movement state

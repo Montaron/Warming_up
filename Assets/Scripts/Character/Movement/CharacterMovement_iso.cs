@@ -3,6 +3,7 @@ using System;
 
 public class CharacterMovement_iso : MonoBehaviour
 {
+    [SerializeField] private Camera mainCamera;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSpeed = 10f;
@@ -29,6 +30,19 @@ public class CharacterMovement_iso : MonoBehaviour
     public void MoveCharacterForward()
     {
         controller.Move(transform.forward * currentSpeed * Time.deltaTime);
+    }
+    public void OrientCharacter()
+    {
+        if (GetMouseWorldPosition(out Vector3 mouseWorldPos))
+        {
+            Vector3 direction = mouseWorldPos - transform.position;
+            direction.y = 0f;
+            if (direction.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = targetRotation;
+            }
+        }
     }
     public void MoveCharacter()
     {
@@ -58,7 +72,6 @@ public class CharacterMovement_iso : MonoBehaviour
         moveDirection = Vector3.ClampMagnitude(moveDirection, 1f);
         controller.Move(moveDirection * currentSpeed * Time.deltaTime);
     }
-
     void Initialize()
     {
         if (cameraTransform == null)
@@ -83,5 +96,18 @@ public class CharacterMovement_iso : MonoBehaviour
     public void ResetSpeed()
     {
         currentSpeed = moveSpeed;
+    }
+    bool GetMouseWorldPosition(out Vector3 hit)
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero); // plane at y=0, facing up
+
+        if (groundPlane.Raycast(ray, out float distance))
+        {
+            hit = ray.GetPoint(distance);
+            return true;
+        }
+        hit = Vector3.zero; // must assign hit on every path, even when returning false
+        return false;
     }
 }
