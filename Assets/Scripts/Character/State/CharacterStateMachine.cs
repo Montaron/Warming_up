@@ -10,6 +10,7 @@ public class CharacterStateMachine : MonoBehaviour
     public CharacterStateIddle idleState { get; private set; }
     public CharacterStateRunning runningState { get; private set; }
     public CharacterStateAttack attackingState { get; private set; }
+    public CharacterStateChanneling channelingState { get; private set; }
 
     public CharacterState previousState { get; private set; }
     public CharacterState currentState { get; private set; }
@@ -23,7 +24,7 @@ public class CharacterStateMachine : MonoBehaviour
         idleState = new CharacterStateIddle(this);
         runningState = new CharacterStateRunning(this);
         attackingState = new CharacterStateAttack(this);
-        ChannelingState = new CharacterStateChanneling(this);
+        channelingState = new CharacterStateChanneling(this);
         stateMap = new Dictionary<CharacterStateType, CharacterState>
         {
             { idleState.stateType, idleState },

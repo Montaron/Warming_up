@@ -11,6 +11,7 @@ public abstract class Spell_data : ScriptableObject
     public CastableContext castContext;
     public CharacterStateType stateTransitionOnCast;
     public SpellCastType spellCastType;
+    public float UnInterruptableDelay = 0f;
 
     [Header("Animation Clips")]
     public AnimationClip startClip;
@@ -86,7 +87,6 @@ public enum UnInterruptableTimerBy
     KeyUp = 8,
     EnnemyHit = 16,
 }
-public float UnInterruptableTimer = 0f;
 
 public enum SpellCastType
 {

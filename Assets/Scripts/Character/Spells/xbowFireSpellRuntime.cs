@@ -20,10 +20,11 @@ public class xbowFireSpellRuntime : BaseSpellRuntime
     }
     public override IEnumerator StartSpell(GameObject caster)
     {
+        RaiseOnSpellPhaseReached(SpellPhase.OnPhaseLoop_Enter);
         // Loop phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
 
-        OnLoopPhaseEnd();
+        RaiseOnSpellPhaseReached(SpellPhase.OnPhaseLoop_End);
         if (token.IsCanceled && token.spellCancelBy == SpellCancelBy.MovementKey)
         {
             animator.SetTrigger("Exit_Loop");
@@ -31,7 +32,6 @@ public class xbowFireSpellRuntime : BaseSpellRuntime
         }
         // End phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
-
         OnEndPhaseEnd();
     }
     public override bool Validate(GameObject caster, SpellFateToken token)

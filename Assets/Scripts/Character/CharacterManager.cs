@@ -87,9 +87,17 @@ public class CharacterManager : MonoBehaviour
         {
             if (data.castContext.Allows(currentState))
             {
-                //Add switch to casting
                 if (characterCombat.CastSpellRequest(data))
-                    stateMachine.ChangeState(CharacterStateType.Attacking);
+                {
+                    if (data.spellCastType == SpellCastType.Channeled)
+                    {
+                        stateMachine.ChangeState(CharacterStateType.Channeling);
+                    }
+                    else
+                    {
+                        stateMachine.ChangeState(CharacterStateType.Attacking);
+                    }
+                }
             }
         }
     }

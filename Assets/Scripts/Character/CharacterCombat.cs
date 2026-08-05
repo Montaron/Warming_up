@@ -116,6 +116,7 @@ public class CharacterCombat : MonoBehaviour
     //Spell Handling
     private void ResetSpell()
     {
+        ((BaseSpellRuntime)currentSpell).OnSpellPhaseReached -= HandleSpellPhaseChange;
         currentSpell = null;
         currentSpellName = null;
         spellFateToken.OnSpellCanceled -= spellFateToken_OnSpellCanceled;
@@ -130,9 +131,19 @@ public class CharacterCombat : MonoBehaviour
         currentSpellName = spellData.spellName;
         currentSpellData = spellData;
         spellFateToken.OnSpellCanceled += spellFateToken_OnSpellCanceled;
-        return spellData.CreateSpellRuntime(gameObject, null);
+        BaseSpellRuntime spell = (BaseSpellRuntime)spellData.CreateSpellRuntime(gameObject, null);
+        spell.OnSpellPhaseReached += HandleSpellPhaseChange;
+        return spell;
     }
 
+    void HandleSpellPhaseChange(BaseSpellRuntime.SpellPhase phase)
+    {
+        if (phase == BaseSpellRuntime.SpellPhase.OnPhaseLoop_Enter)
+        {
+
+        }
+        Debug.Log("PHASE CHANGED" + phase);
+    }
     private void spellFateToken_OnSpellCanceled(SpellCancelBy by)
     {
         // Debug.Log($"Spell {currentSpellName} canceled by {by}");

@@ -15,7 +15,9 @@ MonoBehaviour:
   spellName: Charge
   interruptableBy: 4
   castContext: 3
-  stateTransitionOnCast: 4
+  stateTransitionOnCast: 3
+  spellCastType: 0
+  UnInterruptableDelay: 0
   startClip: {fileID: 7400000, guid: 933c2581746b72e4ebaea0987e98c28a, type: 2}
   startClipStateName: Charge_start
   loopClip: {fileID: 7400000, guid: 05a2e81fcb4f1c24eb3a001ce69f3b35, type: 2}

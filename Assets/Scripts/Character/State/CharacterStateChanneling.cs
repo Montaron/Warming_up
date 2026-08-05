@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CharacterStateChanneling : CharacterState
 {
-    public CharacterStateIddle(CharacterStateMachine stateMachine) : base(stateMachine)
+    public CharacterStateChanneling(CharacterStateMachine stateMachine) : base(stateMachine)
     {
     }
     public override CharacterStateType stateType => CharacterStateType.Channeling;

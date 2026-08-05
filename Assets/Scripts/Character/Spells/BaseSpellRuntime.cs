@@ -11,7 +11,8 @@ public abstract class BaseSpellRuntime : ISpell
     protected virtual bool loopStartPhase => false;
     protected virtual bool loopLoopPhase  => false;
     protected virtual bool loopEndPhase   => false;
-
+    public event Action<SpellPhase> OnSpellPhaseReached;
+    protected void RaiseOnSpellPhaseReached(SpellPhase phase) => OnSpellPhaseReached?.Invoke(phase);
     protected BaseSpellRuntime(GameObject caster, Spell_data data)
     {
         this.caster   = caster;
@@ -26,21 +27,27 @@ public abstract class BaseSpellRuntime : ISpell
 
     public virtual IEnumerator StartSpell(GameObject caster)
     {
+        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseStart_Enter);
         // Start phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerStart, data.startClipStateName, OnStartPhaseUpdate, loopStartPhase, data.startClipSpeedMultiplier);
         //if (token.IsCanceled) yield break;
 
         OnStartPhaseEnd();
-
+        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseStart_End);
+        
+        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseLoop_Enter);
         // Loop phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
 
         OnLoopPhaseEnd();
 
+        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseLoop_End);
+        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseEnd_Enter);
         // End phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
 
         OnEndPhaseEnd();
+        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseEnd_End);
     }
     protected virtual void OnStartPhaseStart()  {}
     protected virtual void OnLoopPhaseStart()  {}
@@ -133,5 +140,13 @@ public abstract class BaseSpellRuntime : ISpell
     {
 
     }
-
+    public enum SpellPhase
+    {
+        OnPhaseStart_Enter,
+        OnPhaseStart_End,
+        OnPhaseLoop_Enter,
+        OnPhaseLoop_End,
+        OnPhaseEnd_Enter,
+        OnPhaseEnd_End
+    }
 }

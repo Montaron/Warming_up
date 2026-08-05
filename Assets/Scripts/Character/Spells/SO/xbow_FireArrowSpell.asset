@@ -16,7 +16,8 @@ MonoBehaviour:
   interruptableBy: 11
   castContext: 3
   stateTransitionOnCast: 4
-  spellCastType: 1
+  spellCastType: 2
+  UnInterruptableDelay: 0
   startClip: {fileID: 0}
   startClipStateName: 
   loopClip: {fileID: 7400000, guid: a469dc4c356cc9049a4b9ad0720cf850, type: 2}
