@@ -6,12 +6,18 @@ using Unity.VisualScripting;
 
 public abstract class Spell_data : ScriptableObject
 {
+    [Header("General information")]
     public string spellName; 
-    public isInterruptableBy interruptableBy;
     public CastableContext castContext;
     public CharacterStateType stateTransitionOnCast;
     public SpellCastType spellCastType;
+
+    [Header("Interruption")]
+    public InterruptFlag interruptableBy;
+    public InterruptFlag unInterrumptableDelayBy;
+    bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute at read after serialization
     public float UnInterruptableDelay = 0f;
+    //bool isUninterruptable = unInterrumptableDelayBy != InterruptFlag.None; Compute once at field Initializer time and for SO its always 0 at construction
 
     [Header("Animation Clips")]
     public AnimationClip startClip;
@@ -30,6 +36,7 @@ public abstract class Spell_data : ScriptableObject
     public string animationTriggerStart;
     public string animationTriggerLoop;
     public string animationTriggerEnd;
+
     public abstract ISpell CreateSpellRuntime(GameObject caster, GameObject target);
 }
 
@@ -66,19 +73,9 @@ public enum WeaponType
     Two_Hander,
     Shield,
 }
+//replace all InterruptFlag
 [Flags]
-public enum isInterruptableBy
-{
-    None = 0,
-    Movement = 1,
-    Stun = 2,
-    KeyDown = 4,
-    KeyUp = 8,
-    EnnemyHit = 16,
-}
-
-[Flags]
-public enum UnInterruptableTimerBy
+public enum InterruptFlag
 {
     None = 0,
     Movement = 1,

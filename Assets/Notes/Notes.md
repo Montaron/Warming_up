@@ -13,9 +13,17 @@ Add a channeled state to change character orientation
 Add two things : -GCD (CharacterCombat), UninterruptableTimerBy enum + Time (SpellData or BaseSpellRuntime or Both)
 CharacterCombat need to know when the channeling has ended so the state change Spell send event -> CharacterCombat recieve it and send an event to change state in StateManager
 I think i have to make an enum CombatState -> SpellStart -> channeling or attacking -> if channeling change to attacking when its done -> if interrupted change to iddle or running
-enum CombatState : None, (spellended), Spell_Started, SPell_Channeling, LoopingPhase_Start, StartPhase_Enter, StartPhase_End
+enum CombatState : None, (spellended), Spell_Started, SPell_Channeling, LoopingPhase_Start, StartPhase_Enter, StartPhase_End -> I think i can pass the enum StateType directly
 put event for each phase is the BaseSpell -> One event and 1enum for each phase, characterCombat Request change state
 CharacterManager should need an CharacterCombatPhaseHandler to deal with it 
+use same enum to UnInterrumptableDelayBy & InterrumptableBy 
+merge the new interrupt function in the CharacterCombat
+Remove the logic from the CharacterManager as much as possible and send clear event to change the CharacterState
+what if my character is rooted and can still cast ? there is two state that should coexists but only one will -> state that impair character control and state that can run in parallel
+Spell can have two flags -> extension method where I define impairing State
+what if my character is immune for a short time create a buff list ? I think it is independant of the state of the character and it should be in a class that handle health loss, damage, buff etc
+Rename the current class CharacterCombat to something that represent its function (CharacterSpellCasting) and create a CharacterCombat that can instantiate it. And I could add a class that handle buff, debuff, damage, modify character stats
+I need a monobehaviour hook to update spellElapsedTime if the class is no longer a monobehaviour -> I can consider using Time.Time 
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class
@@ -177,3 +185,8 @@ Save as .fbx apply all transform ctrl + a
 To import new animation import the whole character and ctrl + d to duplicate in Unity. Now i have animation detached from the character and usable in Unity
 But i have to keep the model, so I want to clean up by having one model and not 10 for each new animations
 I need one fbx file with an avatar or generic avatar assigned to the Animator. One i have make a .anim (ctrl + d) of all the animation in the fbx i can discard them (animation onglet dont import animation) 1 mesh 1 avatar and the animations
+
+## Coding eurekas
+How to merge the two interrupt method is the CharacterCombat ? pass a string and if it is null its the method that dont need to check data spell name (also spellData data = null to set a default value to a method parameter) 
+Monobehaviour hook with static event in a monobehaviour class that trigger an event every update tick with the time
+rule of thumb, if class use unity api, initilize them in awake or start. If not, its fine to initialize them in field
