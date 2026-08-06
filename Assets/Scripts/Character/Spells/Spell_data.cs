@@ -13,6 +13,7 @@ public abstract class Spell_data : ScriptableObject
     public SpellCastType spellCastType;
 
     [Header("Interruption")]
+    public SpellPhases UnInterruptablePhase;
     public InterruptFlag isInterruptableBy;
     public InterruptFlag unInterrumptableDelayBy;
     public bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute at read after serialization
@@ -90,4 +91,23 @@ public enum SpellCastType
     Instant,    // startClip -> endClip immediately, ignores hold/release entirely
     Charged,    // startClip -> loopClip (repeats while held) -> endClip plays on key release
     Channeled   // loopClip repeats continuously, effect ticks each loop, ends on release or interrupt
+}
+
+public enum SpellPhaseTrigger
+{
+    OnPhaseExit_Enter,
+    OnPhaseStart_Enter,
+    OnPhaseStart_End,
+    OnPhaseLoop_Enter,
+    OnPhaseLoop_End,
+    OnPhaseEnd_Enter,
+    OnPhaseEnd_End
+}
+[Flags]
+public enum SpellPhases
+{
+    None = 0,
+    StartPhase = 1,
+    LoopPhase = 2,
+    EndPhase = 4
 }

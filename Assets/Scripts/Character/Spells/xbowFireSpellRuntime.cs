@@ -20,19 +20,22 @@ public class xbowFireSpellRuntime : BaseSpellRuntime
     }
     public override IEnumerator StartSpell(GameObject caster)
     {
-        RaiseOnSpellPhaseReached(SpellPhase.OnPhaseLoop_Enter);
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseLoop_Enter);
         // Loop phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
 
-        RaiseOnSpellPhaseReached(SpellPhase.OnPhaseLoop_End);
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseLoop_End);
         if (token.IsCanceled && token.spellCancelBy == SpellCancelBy.MovementKey)
         {
+            RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseExit_Enter);
             animator.SetTrigger("Exit_Loop");
             yield break;
         }
         // End phase — play and wait for clip to finish
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseEnd_Start);
         yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
         SpellProjectileFactory.Spawn(xbowfire_data, caster);
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseEnd_End);
         OnEndPhaseEnd();
     }
     public override bool Validate(GameObject caster, SpellFateToken token)

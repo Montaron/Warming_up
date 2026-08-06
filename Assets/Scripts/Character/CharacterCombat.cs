@@ -1,4 +1,5 @@
 using System;
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseEnd_Start);
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -26,6 +27,7 @@ public class CharacterCombat : MonoBehaviour
     public Spell_data currentSpellData { get; private set; }
     public bool spellRunning { get; private set; }
     public float spellElapsedTime { get; private set; }
+    public SpellPhases currentPhase;
 
     private ISpell currentSpell;
     private SpellFateToken spellFateToken;
@@ -130,6 +132,7 @@ public class CharacterCombat : MonoBehaviour
         spellElapsedTime = 0f;
         currentSpell = null;
         currentSpellName = null;
+        SpellPhase = . SpellPhases.None;
         spellFateToken.OnSpellCanceled -= spellFateToken_OnSpellCanceled;
         spellFateToken = null;
         spellRunning = false;
@@ -143,27 +146,32 @@ public class CharacterCombat : MonoBehaviour
         spellFateToken.OnSpellCanceled += spellFateToken_OnSpellCanceled;
         BaseSpellRuntime spell = (BaseSpellRuntime) spellData.CreateSpellRuntime(gameObject, null);
         spell.OnSpellPhaseReached += HandleSpellPhaseChange;
+        currentPhase = SpellPhases.None;
         return spell;
     }
 
-    void HandleSpellPhaseChange(BaseSpellRuntime.SpellPhase phase)
+    void HandleSpellPhaseChange(SpellPhaseTrigger phaseTrigger)
     {
-        Debug.Log("PHASE CHANGED" + phase);
-        if (phase == BaseSpellRuntime.SpellPhase.OnPhaseLoop_Enter)
-        {
+    switch (phaseTrigger)
+    {
+        case SpellPhaseTrigger.OnPhaseLoop_Enter:
+            currentPhase = SpellPhases.LoopPhase;
             if (currentSpellData.spellCastType == SpellCastType.Channeled)
-            {
                 OnSpellPhaseChanged?.Invoke(CharacterStateType.Channeling);
-            }
-        }
-        if (phase == BaseSpellRuntime.SpellPhase.OnPhaseLoop_End)
-        {
+            break;
+
+        case SpellPhaseTrigger.OnPhaseLoop_End:
             OnSpellPhaseChanged?.Invoke(CharacterStateType.Attacking);
-        }
+            break;
+
+        case SpellPhaseTrigger.OnPhaseEnd_Start:
+            currentPhase = SpellPhases.EndPhase;
+            break;
+    }
     }
     private void spellFateToken_OnSpellCanceled(SpellCancelBy by)
     {
-        // Debug.Log($"Spell {currentSpellName} canceled by {by}");
+
     }
 
     public bool CastSpellRequest(Spell_data spellData)
@@ -202,7 +210,8 @@ public class CharacterCombat : MonoBehaviour
 
         if (!sameSpellCheck || !currentSpellData.isInterruptableBy.HasFlag(interrupt_reason))
             return false;
-
+        if (currentSpellData.UnInterruptablePhase.HasFlag(currentPhase))
+            return false;
         if (IsDelayedUninterruptible(interrupt_reason))
             return false;
 

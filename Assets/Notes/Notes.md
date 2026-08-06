@@ -2,21 +2,10 @@
 attach weapon with weaponHandler
 Link spell with weapon apparition
 create a projectile for the fire spell
-if the token is cancelled, it send an event but action can trigger coroutine (even for some frames) before it stops
 composable effect system in additon to the SpellData, to add easy damage reduction, heal, status effects to the spell without having to create them each time
 Charge need to be stopped and maybe two end animation or skip end animation totally so i need a way to exit coroutine entirely
-When moving and starting to shoot i notice that the animation play but it is interrupted a millisec after because the movement key is hold at the same time. I need to think of a mecanisme that interupt the moving for some time when the shoot key is triggered. 
-Channeled spell have a ImmuneFromMovement time, when a spell is started the CharacterCombat track the time elapsed. Movement can only interrupt the spell if the timer > ImmuneFromMovement
 orientation while channeling
-Create a global cd
-Add a channeled state to change character orientation
 Add two things : -GCD (CharacterCombat), UninterruptableTimerBy enum + Time (SpellData or BaseSpellRuntime or Both)
-CharacterCombat need to know when the channeling has ended so the state change Spell send event -> CharacterCombat recieve it and send an event to change state in StateManager
-I think i have to make an enum CombatState -> SpellStart -> channeling or attacking -> if channeling change to attacking when its done -> if interrupted change to iddle or running
-enum CombatState : None, (spellended), Spell_Started, SPell_Channeling, LoopingPhase_Start, StartPhase_Enter, StartPhase_End -> I think i can pass the enum StateType directly
-put event for each phase is the BaseSpell -> One event and 1enum for each phase, characterCombat Request change state
-CharacterManager should need an CharacterCombatPhaseHandler to deal with it 
-use same enum to UnInterrumptableDelayBy & InterrumptableBy 
 merge the new interrupt function in the CharacterCombat
 Remove the logic from the CharacterManager as much as possible and send clear event to change the CharacterState
 what if my character is rooted and can still cast ? there is two state that should coexists but only one will -> state that impair character control and state that can run in parallel
@@ -24,7 +13,17 @@ Spell can have two flags -> extension method where I define impairing State
 what if my character is immune for a short time create a buff list ? I think it is independant of the state of the character and it should be in a class that handle health loss, damage, buff etc
 Rename the current class CharacterCombat to something that represent its function (CharacterSpellCasting) and create a CharacterCombat that can instantiate it. And I could add a class that handle buff, debuff, damage, modify character stats
 I need a monobehaviour hook to update spellElapsedTime if the class is no longer a monobehaviour -> I can consider using Time.Time 
-the end animation is interrupted, need a way to make end animation play without interruption, need to add Phase Interruptable ? track current phase with event 
+CharacterCombat has 2 components : Caster and a buff and debuff class ? Or StatsComponent is good enough -> if an ennemy is hit check buff and reduce the initial amount and then apply reduce health   
+How are buffs 1) Applied (through spell, through game bonus) 2) Handled (can start in StatsComponent then refactor)
+Prob need a bunch of enums BuffType
+CharacterCombat could be more general, for targeting,  
+What happen to the SpellPhase when the spell is exited early ? Should create a new phase -> OnPhaseExit
+How would I create a tick effect while channeling ? Get the target -> apply damage to the target while looping each tick. That mean I have the damage in the CharacterCombat and not the spell
+I can classify 3 way of doing dmg, External collider (arrow), character collider (charging) and the targeting (lightning) -> One entry point many callers -> IDamageable interface
+that should be the same for the buffer system. One entry point for everything.
+Could be at start or at the end of a spell -> BuffComponent -> TryAddBuff -> the buff already exists or add them ? Need buff logic here (additive, unique, cap, immunity ?)
+CharacterManager should be used to get data and not necessarly logic in it.
+instead of bool return if a buff is applied I can return a enum : Succes, Fail_Resisted, ... 
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class
@@ -55,7 +54,7 @@ Faire jouer les sons et veffets depuis le sort directement ou bien trigger un ev
 SFX sur chaque object envoyant un son ? Non uniquement un singleton SFX.
 Faire des effets bandes dessinees pour la vitesse (hades), les impacts -> Claude peut generer des VFX ? Non mais peut aider a generer des shaders et des VFX graph et shuriken particle system
 
-### Core GamePlay
+### GamePlay Idea
 when mousebutton 1 is hold the character could be oriented toward the cursor to make targetting easier ?
 How to make the stance dance fun -> how to make the player switch between them
 3 Stances -> 3 spells
@@ -75,6 +74,8 @@ Having ragdoll effect on deaths
 
 Character could have multiple live to make the combat more interesting (when killing some one else took their soul ? visual looking skeleton aura red, blue etc)
 
+When channeling, could use other keybind to change the spell for instance, arrow could have AoE, Heal, Stun or Single target
+the mouse spell could be the main one and more change to it than the other
 # Game Monolith
 ## GameManager
 ## Character

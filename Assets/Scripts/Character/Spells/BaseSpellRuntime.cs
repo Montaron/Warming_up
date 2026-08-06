@@ -11,8 +11,8 @@ public abstract class BaseSpellRuntime : ISpell
     protected virtual bool loopStartPhase => false;
     protected virtual bool loopLoopPhase  => false;
     protected virtual bool loopEndPhase   => false;
-    public event Action<SpellPhase> OnSpellPhaseReached;
-    protected void RaiseOnSpellPhaseReached(SpellPhase phase) => OnSpellPhaseReached?.Invoke(phase);
+    public event Action<SpellPhaseTrigger> OnSpellPhaseReached;
+    protected void RaiseOnSpellPhaseReached(SpellPhaseTrigger phaseTrigger) => OnSpellPhaseReached?.Invoke(phaseTrigger);
     protected BaseSpellRuntime(GameObject caster, Spell_data data)
     {
         this.caster   = caster;
@@ -139,15 +139,6 @@ public abstract class BaseSpellRuntime : ISpell
     public virtual void SpellEnd()
     {
 
-    }
-    public enum SpellPhase
-    {
-        OnPhaseStart_Enter,
-        OnPhaseStart_End,
-        OnPhaseLoop_Enter,
-        OnPhaseLoop_End,
-        OnPhaseEnd_Enter,
-        OnPhaseEnd_End
     }
 }
 // Spawner — call this from wherever the spell logic triggers the projectile release
