@@ -166,6 +166,9 @@ merge if everything is ok
 `git merge`
 check specifil file commit history
 `git log -p -- Assets/Notes/Notes.md | vim -`
+
+add multiple -m to a commit to have multiple lines
+`git commit -m "hello" -m "world"`
 ## Mermaid
 Install Mermaid support tool on VScode
 ctrl + shift + v to see preview mode
