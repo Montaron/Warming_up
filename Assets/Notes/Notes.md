@@ -24,6 +24,7 @@ Spell can have two flags -> extension method where I define impairing State
 what if my character is immune for a short time create a buff list ? I think it is independant of the state of the character and it should be in a class that handle health loss, damage, buff etc
 Rename the current class CharacterCombat to something that represent its function (CharacterSpellCasting) and create a CharacterCombat that can instantiate it. And I could add a class that handle buff, debuff, damage, modify character stats
 I need a monobehaviour hook to update spellElapsedTime if the class is no longer a monobehaviour -> I can consider using Time.Time 
+the end animation is interrupted, need a way to make end animation play without interruption, need to add Phase Interruptable ? track current phase with event 
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class

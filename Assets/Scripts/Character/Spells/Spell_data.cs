@@ -13,9 +13,9 @@ public abstract class Spell_data : ScriptableObject
     public SpellCastType spellCastType;
 
     [Header("Interruption")]
-    public InterruptFlag interruptableBy;
+    public InterruptFlag isInterruptableBy;
     public InterruptFlag unInterrumptableDelayBy;
-    bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute at read after serialization
+    public bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute at read after serialization
     public float UnInterruptableDelay = 0f;
     //bool isUninterruptable = unInterrumptableDelayBy != InterruptFlag.None; Compute once at field Initializer time and for SO its always 0 at construction
 

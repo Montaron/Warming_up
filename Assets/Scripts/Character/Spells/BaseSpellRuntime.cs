@@ -150,3 +150,32 @@ public abstract class BaseSpellRuntime : ISpell
         OnPhaseEnd_End
     }
 }
+// Spawner — call this from wherever the spell logic triggers the projectile release
+public static class SpellProjectileFactory
+{
+    public static SpellProjectile Spawn(ProjectileSpell_data data, GameObject caster)
+    {
+        if (data.projectilePrefab == null)
+        {
+            Debug.LogError($"Spell '{data.spellName}' has no projectile prefab assigned.");
+            return null;
+        }
+
+        Vector3 direction = caster.transform.forward;
+        Vector3 spawnPosition = caster.transform.position + direction * data.projectileSpawnOffset;
+        Quaternion spawnRotation = Quaternion.LookRotation(direction);
+
+        GameObject instance = UnityEngine.Object.Instantiate(data.projectilePrefab, spawnPosition, spawnRotation);
+        SpellProjectile projectile = instance.GetComponent<SpellProjectile>();
+
+        if (projectile == null)
+        {
+            Debug.LogError($"Projectile prefab for '{data.spellName}' is missing a SpellProjectile component.");
+            UnityEngine.Object.Destroy(instance);
+            return null;
+        }
+
+        projectile.Initialize(direction, data.projectileSpeed, data.projectileLifetime);
+        return projectile;
+    }
+}

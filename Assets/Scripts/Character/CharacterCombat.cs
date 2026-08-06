@@ -16,16 +16,16 @@ public class CharacterCombat : MonoBehaviour
 
     //Events
     public event Action<Spell_data> OnSpellEnded;
-    public event Action<CharacterStateType> OnSpellPhaseChanged; 
+    public event Action<CharacterStateType> OnSpellPhaseChanged;
 
-    public Collider currentTarget {get; private set;}
+    public Collider currentTarget { get; private set; }
     private List<Collider> detectedTargets = new();
 
     //Others
-    public string currentSpellName {get; private set;}
-    public Spell_data currentSpellData {get; private set;}
-    public bool spellRunning {get; private set;}
-    public float spellElapsedTime {get; private set;}
+    public string currentSpellName { get; private set; }
+    public Spell_data currentSpellData { get; private set; }
+    public bool spellRunning { get; private set; }
+    public float spellElapsedTime { get; private set; }
 
     private ISpell currentSpell;
     private SpellFateToken spellFateToken;
@@ -102,7 +102,7 @@ public class CharacterCombat : MonoBehaviour
         if (currentTarget != null)
             SetColliderColor(currentTarget, Color.white);
 
-        currentTarget      = null;
+        currentTarget = null;
     }
 
     private void SetColliderColor(Collider col, Color color)
@@ -126,7 +126,7 @@ public class CharacterCombat : MonoBehaviour
     //Spell Handling
     private void ResetSpell()
     {
-        ((BaseSpellRuntime)currentSpell).OnSpellPhaseReached -= HandleSpellPhaseChange;
+        ((BaseSpellRuntime) currentSpell).OnSpellPhaseReached -= HandleSpellPhaseChange;
         spellElapsedTime = 0f;
         currentSpell = null;
         currentSpellName = null;
@@ -141,7 +141,7 @@ public class CharacterCombat : MonoBehaviour
         currentSpellName = spellData.spellName;
         currentSpellData = spellData;
         spellFateToken.OnSpellCanceled += spellFateToken_OnSpellCanceled;
-        BaseSpellRuntime spell = (BaseSpellRuntime)spellData.CreateSpellRuntime(gameObject, null);
+        BaseSpellRuntime spell = (BaseSpellRuntime) spellData.CreateSpellRuntime(gameObject, null);
         spell.OnSpellPhaseReached += HandleSpellPhaseChange;
         return spell;
     }
@@ -151,14 +151,14 @@ public class CharacterCombat : MonoBehaviour
         Debug.Log("PHASE CHANGED" + phase);
         if (phase == BaseSpellRuntime.SpellPhase.OnPhaseLoop_Enter)
         {
-            if (currentSpellData.SpellCastType == SpellCastType.Channeled)
+            if (currentSpellData.spellCastType == SpellCastType.Channeled)
             {
                 OnSpellPhaseChanged?.Invoke(CharacterStateType.Channeling);
             }
         }
         if (phase == BaseSpellRuntime.SpellPhase.OnPhaseLoop_End)
         {
-            OnSPellPhaseChanged?.Invoke(CharacterStateType.Attacking)     
+            OnSpellPhaseChanged?.Invoke(CharacterStateType.Attacking);
         }
     }
     private void spellFateToken_OnSpellCanceled(SpellCancelBy by)
@@ -192,35 +192,36 @@ public class CharacterCombat : MonoBehaviour
         OnSpellEnded(spellData);
         ResetSpell();
     }
-    public bool Test_TryInterruptSpell(string incomingSpellName, InterruptFlag interrupt_reason)
+    public bool Test_TryInterruptSpell(InterruptFlag interrupt_reason, string incomingSpellName = null)
     {
-        if (spellRunning)
-        {
-            if (!string.isNullOrEmpty(incomingSpellName))
-            {
-                if (currentSpellName == incomingSpellName && spellData.interruptableBy.HasFlag(interrupt_reason))
-                {
-                    if (currentSpellData.isUninterruptable && currentSpellData.unInterrumptableDelayBy.HasFlag(interrupt_reason) && currentSpellData.UnInterruptableDelay < spellElapsedTime)
-                    CancelCurrentSpell(interrupt_reason);
-                    return true;
-                }
-            }
-            else
-            {
-                if (currentSpellData.interruptableBy.HasFlag(interrupt_reason))
-                {
-                    if (currentSpellData.isUninterruptable && currentSpellData.unInterrumptableDelayBy.HasFlag(interrupt_reason) && currentSpellData.UnInterruptableDelay < spellElapsedTime)
-                    CancelCurrentSpell(interrupt_reason);
-                    return true;
-                }
-            }
-        }
+        if (!spellRunning)
+            return false;
+
+        bool sameSpellCheck = string.IsNullOrEmpty(incomingSpellName)
+            || currentSpellName == incomingSpellName;
+
+        if (!sameSpellCheck || !currentSpellData.isInterruptableBy.HasFlag(interrupt_reason))
+            return false;
+
+        if (IsDelayedUninterruptible(interrupt_reason))
+            return false;
+
+        CancelCurrentSpell(interrupt_reason);
+        return true;
+    }
+
+    private bool IsDelayedUninterruptible(InterruptFlag interrupt_reason)
+    {
+        Debug.Log(currentSpellData.isUninterruptable);
+        return currentSpellData.isUninterruptable
+            && currentSpellData.unInterrumptableDelayBy.HasFlag(interrupt_reason)
+            && currentSpellData.UnInterruptableDelay >= spellElapsedTime;
     }
     public bool TryInterruptSpell(Spell_data spellData, InterruptFlag interrupt_reason)
     {
         if (spellRunning)
         {
-            if (currentSpellName == spellData.spellName && spellData.interruptableBy.HasFlag(interrupt_reason))
+            if (currentSpellName == spellData.spellName && spellData.isInterruptableBy.HasFlag(interrupt_reason))
             {
                 CancelCurrentSpell(interrupt_reason);
                 return true;
@@ -232,10 +233,10 @@ public class CharacterCombat : MonoBehaviour
     {
         if (spellRunning)
         {
-            if (currentSpellData.interruptableBy.HasFlag(interrupt_reason))
+            if (currentSpellData.isInterruptableBy.HasFlag(interrupt_reason))
             {
                 if (currentSpellData.isUninterruptable && currentSpellData.unInterrumptableDelayBy.HasFlag(interrupt_reason) && currentSpellData.UnInterruptableDelay < spellElapsedTime)
-                CancelCurrentSpell(interrupt_reason);
+                    CancelCurrentSpell(interrupt_reason);
                 return true;
             }
         }
@@ -244,7 +245,7 @@ public class CharacterCombat : MonoBehaviour
     private void CancelCurrentSpell(InterruptFlag interrupt_reason)
     {
         if (currentSpell == null || spellFateToken.IsCanceled) return;
-
+        Debug.Log("Time elapsed = " + spellElapsedTime);
         SpellCancelBy spellCancelBy = interrupt_reason switch
         {
             InterruptFlag.KeyDown => SpellCancelBy.keyDown,

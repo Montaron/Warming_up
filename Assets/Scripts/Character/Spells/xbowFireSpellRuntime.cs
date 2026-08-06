@@ -32,6 +32,7 @@ public class xbowFireSpellRuntime : BaseSpellRuntime
         }
         // End phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
+        SpellProjectileFactory.Spawn(xbowfire_data, caster);
         OnEndPhaseEnd();
     }
     public override bool Validate(GameObject caster, SpellFateToken token)

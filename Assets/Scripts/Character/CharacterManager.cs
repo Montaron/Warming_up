@@ -60,7 +60,7 @@ public class CharacterManager : MonoBehaviour
     private void HandleSpellGetKeyUp(Spell_data data)
     {
         Debug.Log("KEY UP");
-        characterCombat.TryInterruptSpell(data, InterruptFlag.KeyUp);
+        characterCombat.Test_TryInterruptSpell(InterruptFlag.KeyUp, data.spellName);
     }
 
     private void HandleSpellEnded(Spell_data data)
@@ -80,7 +80,7 @@ public class CharacterManager : MonoBehaviour
         if (characterCombat.spellRunning)
         {
             Debug.Log("Trying to interrupt");
-            characterCombat.TryInterruptSpell(data, InterruptFlag.KeyDown);
+            characterCombat.Test_TryInterruptSpell(InterruptFlag.KeyDown, data.spellName);
             return;
         }
         else
@@ -106,9 +106,9 @@ public class CharacterManager : MonoBehaviour
     {
         characterMov_iso.SetInput(vector);
         if (vector.magnitude > 0.1f && currentState == CharacterStateType.Iddle || currentState == CharacterStateType.Running
-            || (characterCombat.currentSpellData != null && characterCombat.currentSpellData.interruptableBy.HasFlag(InterruptFlag.Movement)))
+            || (characterCombat.currentSpellData != null && characterCombat.currentSpellData.isInterruptableBy.HasFlag(InterruptFlag.Movement)))
         {
-            characterCombat.TryInterruptCurrentSpell(InterruptFlag.Movement);
+            characterCombat.Test_TryInterruptSpell(InterruptFlag.Movement);
         }
     }
 

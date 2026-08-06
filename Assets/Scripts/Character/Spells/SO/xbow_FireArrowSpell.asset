@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: xbow_FireArrowSpell
   m_EditorClassIdentifier: 
   spellName: xbowFire
-  interruptableBy: 11
   castContext: 3
   stateTransitionOnCast: 4
   spellCastType: 2
-  UnInterruptableDelay: 0
+  isInterruptableBy: 9
+  unInterrumptableDelayBy: 1
+  UnInterruptableDelay: 0.1
   startClip: {fileID: 0}
   startClipStateName: 
   loopClip: {fileID: 7400000, guid: a469dc4c356cc9049a4b9ad0720cf850, type: 2}
@@ -32,4 +33,7 @@ MonoBehaviour:
   animationTriggerEnd: Xbow_End
   damage: 100
   projectile_speed: 1
-  projectilePrefab: {fileID: 0}
+  projectileSpeed: 5
+  projectileSpawnOffset: 1
+  projectileLifetime: 10
+  projectilePrefab: {fileID: 5195103526891217618, guid: 3212ae2efb2af0c4d949375bab845a69, type: 3}
