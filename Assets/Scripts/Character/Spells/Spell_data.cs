@@ -13,9 +13,12 @@ public abstract class Spell_data : ScriptableObject
     public SpellCastType spellCastType;
 
     [Header("Interruption")]
+    //public list <InterruptFlagCancelType> isInterruptableBy;
     public SpellPhases UnInterruptablePhase;
     public InterruptFlag isInterruptableBy;
     public InterruptFlag unInterrumptableDelayBy;
+    //public list <UnInterruptablePhaseDelay> unInterruptablePhaseDelay;
+    //Check if the list is empty
     public bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute at read after serialization
     public float UnInterruptableDelay = 0f;
     //bool isUninterruptable = unInterrumptableDelayBy != InterruptFlag.None; Compute once at field Initializer time and for SO its always 0 at construction
@@ -86,6 +89,26 @@ public enum InterruptFlag
     EnnemyHit = 16,
 }
 
+public enum SpellInterruptionType
+{
+    SkipPhase,
+    CancelSpell
+}
+
+[Serializable]
+public struct InterruptFlagCancelType
+{
+    public InterruptFlag Flag;
+    public SpellInterruptionType Type;
+}
+
+[Serializable]
+public struct UnInterruptablePhaseDelay 
+{
+    public InterruptFlag Flag;
+    public SpellPhases Phase;
+    public float time_amount;
+}
 public enum SpellCastType
 {
     Instant,    // startClip -> endClip immediately, ignores hold/release entirely

@@ -1,4 +1,8 @@
 # ToDo
+make some action trigger fatetoken cancel and other skipphase
+if its the charge, if we interrupt while looping the endphase is skipped -- or I need to play an alternative endphase -- but i still need to implement a system that can kill the spell and the animation on the spot
+UnInterruptablePhase should only work for RequestPhaseInterruption
+OneMethod try to interrupt and in the spell data we need a way to link the type of interrupt with the type of fate (cancel or skipphase)
 keyUP cancel the token in loop update and the cancel stay cancel even though we put immunity on the endphase, the token still say cancel maybe i need a transition event separate
 change chargespell to have phase transition
 attach weapon with weaponHandler

@@ -219,6 +219,34 @@ public class CharacterCombat : MonoBehaviour
         return true;
     }
 
+    public bool Test_TryInterruptSpell2(InterruptFlag interrupt_reason, string incomingSpellName = null)
+    {
+        if (!spellRunning)
+            return false;
+
+        bool sameSpellCheck = string.IsNullOrEmpty(incomingSpellName)
+            || currentSpellName == incomingSpellName;
+        
+        if (!sameSpellCheck || !currentSpellData.isInterruptableBy.Exists(r => r.Flag == interrupt_reason))
+            return false;
+        if (currentSpellData.UnInterruptablePhase.HasFlag(currentPhase))
+            return false;
+        if (currentSpellData.UnInterruptablePhaseDelay.Exists(r => r.Flag == interrupt_reason)
+            && IsDelayedUninterruptible2(interrupt_reason))
+            return false;
+        if ((currentSpellData.isInterruptableBy.Find(r => r.Flag == interrupt_reason)).Type == SpellInterruptionType.SkipPhase)
+            SkipCurrentSpellPhase(interrupt_reason);
+        else
+            CancelCurrentSpell(interrupt_reason);
+        return true;
+    }
+    private bool IsDelayedUninterruptible2(InterruptFlag interrupt_reason)
+    {
+        var unInterruptable = currentSpellData.UnInterruptablePhaseDelay.Find(r => r.Flag == interrupt_reason);
+        if (unInterruptable.SpellPhases == currentPhase)
+            return true;
+        return unInterruptable.time_amount > spellElapsedTime
+    }
     private bool IsDelayedUninterruptible(InterruptFlag interrupt_reason)
     {
         Debug.Log(currentSpellData.isUninterruptable);
