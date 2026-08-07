@@ -27,27 +27,21 @@ public abstract class BaseSpellRuntime : ISpell
 
     public virtual IEnumerator StartSpell(GameObject caster)
     {
-        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseStart_Enter);
         // Start phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerStart, data.startClipStateName, OnStartPhaseUpdate, loopStartPhase, data.startClipSpeedMultiplier);
         //if (token.IsCanceled) yield break;
 
         OnStartPhaseEnd();
-        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseStart_End);
         
-        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseLoop_Enter);
         // Loop phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
 
         OnLoopPhaseEnd();
 
-        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseLoop_End);
-        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseEnd_Enter);
         // End phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
 
         OnEndPhaseEnd();
-        OnSpellPhaseReached?.Invoke(SpellPhase.OnPhaseEnd_End);
     }
     protected virtual void OnStartPhaseStart()  {}
     protected virtual void OnLoopPhaseStart()  {}
@@ -70,12 +64,7 @@ public abstract class BaseSpellRuntime : ISpell
 
         animator.Play(animationStateName, 0, 0f);
         animator.speed = animSpeedMultiplier; 
-        // Debug.Log($"Playing trigger {trigger}");
-        // Wait one frame for Animator to transition
         yield return null;
-        // Wait for transition to fully complete before reading state
-        //yield return new WaitUntil(() => !animator.IsInTransition(0));
-        Debug.Log("Transition done, entering try block" + animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
         try 
         {
             if (isLooping)
@@ -89,7 +78,7 @@ public abstract class BaseSpellRuntime : ISpell
             else
             {
                 while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f
-               && !token.IsCanceled
+               //&& !token.IsCanceled//
                && animator.GetCurrentAnimatorStateInfo(0).IsName(animationStateName))
                 {
                     OnUpdate?.Invoke();
@@ -101,7 +90,6 @@ public abstract class BaseSpellRuntime : ISpell
         {
             animator.speed = 1f;
         }
-        // Wait until the clip finishes playing
     }
 
     public virtual bool Validate(GameObject caster, SpellFateToken token)
@@ -153,8 +141,8 @@ public static class SpellProjectileFactory
         }
 
         Vector3 direction = caster.transform.forward;
-        Vector3 spawnPosition = caster.transform.position + direction * data.projectileSpawnOffset;
-        Quaternion spawnRotation = Quaternion.LookRotation(direction);
+        Vector3 spawnPosition = caster.transform.position + direction * data.projectileSpawnOffset_X + Vector3.up * data.projectileSpawnOffset_Z;
+        Quaternion spawnRotation = Quaternion.LookRotation(direction) * Quaternion.Euler(new Vector3(0, 90, 0));
 
         GameObject instance = UnityEngine.Object.Instantiate(data.projectilePrefab, spawnPosition, spawnRotation);
         SpellProjectile projectile = instance.GetComponent<SpellProjectile>();

@@ -1,5 +1,4 @@
 using System;
-        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseEnd_Start);
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -38,6 +37,7 @@ public class CharacterCombat : MonoBehaviour
     }
     void Update()
     {
+        Debug.Log("Current Phase = " + currentPhase);
         if (spellRunning)
         {
             spellElapsedTime += Time.deltaTime;
@@ -132,7 +132,7 @@ public class CharacterCombat : MonoBehaviour
         spellElapsedTime = 0f;
         currentSpell = null;
         currentSpellName = null;
-        SpellPhase = . SpellPhases.None;
+        currentPhase = SpellPhases.None;
         spellFateToken.OnSpellCanceled -= spellFateToken_OnSpellCanceled;
         spellFateToken = null;
         spellRunning = false;
@@ -150,7 +150,7 @@ public class CharacterCombat : MonoBehaviour
         return spell;
     }
 
-    void HandleSpellPhaseChange(SpellPhaseTrigger phaseTrigger)
+    private void HandleSpellPhaseChange(SpellPhaseTrigger phaseTrigger)
     {
     switch (phaseTrigger)
     {
@@ -164,7 +164,7 @@ public class CharacterCombat : MonoBehaviour
             OnSpellPhaseChanged?.Invoke(CharacterStateType.Attacking);
             break;
 
-        case SpellPhaseTrigger.OnPhaseEnd_Start:
+        case SpellPhaseTrigger.OnPhaseEnd_Enter:
             currentPhase = SpellPhases.EndPhase;
             break;
     }

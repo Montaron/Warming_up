@@ -16,8 +16,15 @@ public class xbowFireSpellRuntime : BaseSpellRuntime
             this.target = target;
         }
         if (data != null)
-        { xbowfire_data = data; }
+        { 
+            xbowfire_data = data; 
+        }
     }
+    protected override void OnEndPhaseUpdate()   
+    { 
+        Debug.Log("Updating during EndPhase...");
+    }
+
     public override IEnumerator StartSpell(GameObject caster)
     {
         RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseLoop_Enter);
@@ -32,9 +39,9 @@ public class xbowFireSpellRuntime : BaseSpellRuntime
             yield break;
         }
         // End phase — play and wait for clip to finish
-        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseEnd_Start);
-        yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseEnd_Enter);
         SpellProjectileFactory.Spawn(xbowfire_data, caster);
+        yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
         RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseEnd_End);
         OnEndPhaseEnd();
     }

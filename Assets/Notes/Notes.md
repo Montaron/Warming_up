@@ -1,4 +1,6 @@
 # ToDo
+keyUP cancel the token in loop update and the cancel stay cancel even though we put immunity on the endphase, the token still say cancel maybe i need a transition event separate
+change chargespell to have phase transition
 attach weapon with weaponHandler
 Link spell with weapon apparition
 create a projectile for the fire spell
@@ -24,6 +26,7 @@ that should be the same for the buffer system. One entry point for everything.
 Could be at start or at the end of a spell -> BuffComponent -> TryAddBuff -> the buff already exists or add them ? Need buff logic here (additive, unique, cap, immunity ?)
 CharacterManager should be used to get data and not necessarly logic in it.
 instead of bool return if a buff is applied I can return a enum : Succes, Fail_Resisted, ... 
+if mouseover enemy orient the character to the enemy directly (little help)
 ### Weapon Change when casting
 put the shield on the hand while charging // make a system for each spells has a way to handle weapon
 -> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class
