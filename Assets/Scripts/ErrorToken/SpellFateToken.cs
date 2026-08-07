@@ -4,8 +4,10 @@ using UnityEngine;
 public class SpellFateToken
 {
     public bool IsCanceled { get; private set; }
+    public bool SkipRequested { get; private set; }
     //public bool SkipPhase { get; private set; }
     public event Action<SpellCancelBy> OnSpellCanceled;
+    public event Action OnPhaseSkipRequested;
     public SpellCancelBy spellCancelBy{ get; private set; }
 
     public void Cancel(SpellCancelBy cancelBy)
@@ -15,6 +17,14 @@ public class SpellFateToken
         Debug.Log("Token cancellation reason " + cancelBy);
         OnSpellCanceled?.Invoke(cancelBy);
     }
+
+    public void RequestSkip()
+    {
+        SkipRequested = true;
+        OnPhaseSkipRequested?.Invoke();
+    }
+
+    public void ResetSkip() => SkipRequested = false;
 }
 
 public enum SpellCancelBy
