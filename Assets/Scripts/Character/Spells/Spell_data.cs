@@ -13,15 +13,15 @@ public abstract class Spell_data : ScriptableObject
     public SpellCastType spellCastType;
 
     [Header("Interruption")]
-    //public list <InterruptFlagCancelType> isInterruptableBy;
-    public SpellPhases UnInterruptablePhase;
+    public List<InterruptFlagCancelType> isInterruptableBy_List;
+    public List<UnInterruptablePhaseDelay> unInterruptablePhaseDelay_List;
+    public SpellPhase UnInterruptablePhase;
     public InterruptFlag isInterruptableBy;
     public InterruptFlag unInterrumptableDelayBy;
-    //public list <UnInterruptablePhaseDelay> unInterruptablePhaseDelay;
     //Check if the list is empty
     public bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute at read after serialization
     public float UnInterruptableDelay = 0f;
-    //bool isUninterruptable = unInterrumptableDelayBy != InterruptFlag.None; Compute once at field Initializer time and for SO its always 0 at construction
+    //bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute once at field Initializer time and for SO its always 0 at construction
 
     [Header("Animation Clips")]
     public AnimationClip startClip;
@@ -106,7 +106,7 @@ public struct InterruptFlagCancelType
 public struct UnInterruptablePhaseDelay 
 {
     public InterruptFlag Flag;
-    public SpellPhases Phase;
+    public SpellPhase Phase;
     public float time_amount;
 }
 public enum SpellCastType
@@ -127,7 +127,7 @@ public enum SpellPhaseTrigger
     OnPhaseEnd_End
 }
 [Flags]
-public enum SpellPhases
+public enum SpellPhase
 {
     None = 0,
     StartPhase = 1,
