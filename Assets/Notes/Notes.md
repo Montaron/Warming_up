@@ -1,4 +1,6 @@
-# ToDo
+#private ToDo
+AnyState transition for the exit_loop trigger -> CHECK
+Who call the end of the spell ? The combatCharacter raised event or the Fatetoken
 make some action trigger fatetoken cancel and other skipphase
 if its the charge, if we interrupt while looping the endphase is skipped -- or I need to play an alternative endphase -- but i still need to implement a system that can kill the spell and the animation on the spot
 UnInterruptablePhase should only work for RequestPhaseInterruption
@@ -202,3 +204,9 @@ I need one fbx file with an avatar or generic avatar assigned to the Animator. O
 How to merge the two interrupt method is the CharacterCombat ? pass a string and if it is null its the method that dont need to check data spell name (also spellData data = null to set a default value to a method parameter) 
 Monobehaviour hook with static event in a monobehaviour class that trigger an event every update tick with the time
 rule of thumb, if class use unity api, initilize them in awake or start. If not, its fine to initialize them in field
+
+usage of out and creation of the variable in the parameter out + var
+`if (!TryGetInterruption(interrupt_reason, currentPhase, out var interrupt_data))`
+        `return false;`
+`if (TryGetImmunity(interrupt_data.Interrupt, interrupt_data.Phase, out var interruptWindow)`
+        `&& interruptWindow > spellElapsedTime)`

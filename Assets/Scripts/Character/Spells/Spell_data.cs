@@ -10,15 +10,22 @@ public abstract class Spell_data : ScriptableObject
     public string spellName; 
     public CastableContext castContext;
     public CharacterStateType stateTransitionOnCast;
-    public SpellCastType spellCastType;
+    public SpellType spellType;
 
     [Header("Interruption")]
-    public List<InterruptFlagCancelType> isInterruptableBy_List;
-    public List<UnInterruptablePhaseDelay> unInterruptablePhaseDelay_List;
+    //Interruption : 
+    // -Spell can be interrupted by actions (InterruptFlag) during either the current phase (SpellPhase) or interrupt all the spell sequence (the choice is found in SpellInterruptionType)
+    // -Some Phases can have window where they cant be interrupted (SpellUnInterruptablePhaseWindow_data)
+    public List<SpellInterruption_data> IsInterruptableBy;
+    public List<SpellUnInterruptablePhaseWindow_data> hasUnInterruptableWindow;
+    //I think it is useless now since I have all the data contained in my struct, each interruption is linked to its phase and the type of interruption 
     public SpellPhase UnInterruptablePhase;
+    //Plusbesoin
     public InterruptFlag isInterruptableBy;
+    //Plusbesoin
     public InterruptFlag unInterrumptableDelayBy;
     //Check if the list is empty
+    //plus besoin
     public bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute at read after serialization
     public float UnInterruptableDelay = 0f;
     //bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute once at field Initializer time and for SO its always 0 at construction
@@ -70,6 +77,7 @@ public static class CastContextExtensions
         return allowedContexts.HasFlag(current);
     }
 }
+
 public enum WeaponType
 {
     None,
@@ -77,7 +85,7 @@ public enum WeaponType
     Two_Hander,
     Shield,
 }
-//replace all InterruptFlag
+
 [Flags]
 public enum InterruptFlag
 {
@@ -96,41 +104,42 @@ public enum SpellInterruptionType
 }
 
 [Serializable]
-public struct InterruptFlagCancelType
+public struct SpellInterruption_data
 {
-    public InterruptFlag Flag;
+    public SpellPhase Phase;
+    public InterruptFlag Interrupt;
     public SpellInterruptionType Type;
 }
 
 [Serializable]
-public struct UnInterruptablePhaseDelay 
+public struct SpellUnInterruptablePhaseWindow_data 
 {
-    public InterruptFlag Flag;
     public SpellPhase Phase;
+    public InterruptFlag Interrupt;
     public float time_amount;
 }
-public enum SpellCastType
+public enum SpellType
 {
-    Instant,    // startClip -> endClip immediately, ignores hold/release entirely
-    Charged,    // startClip -> loopClip (repeats while held) -> endClip plays on key release
-    Channeled   // loopClip repeats continuously, effect ticks each loop, ends on release or interrupt
+    Instant,
+    Charged,
+    Channeled
 }
 
 public enum SpellPhaseTrigger
 {
-    OnPhaseExit_Enter,
-    OnPhaseStart_Enter,
-    OnPhaseStart_End,
-    OnPhaseLoop_Enter,
-    OnPhaseLoop_End,
-    OnPhaseEnd_Enter,
-    OnPhaseEnd_End
+    OnPhaseExit,
+    OnStartPhase_Enter,
+    OnStartPhase_End,
+    OnLoopPhase_Enter,
+    OnLoopPhase_End,
+    OnEndPhase_Enter,
+    OnEndPhase_End
 }
 [Flags]
 public enum SpellPhase
 {
     None = 0,
-    StartPhase = 1,
-    LoopPhase = 2,
-    EndPhase = 4
+    Start = 1,
+    Loop = 2,
+    End = 4
 }

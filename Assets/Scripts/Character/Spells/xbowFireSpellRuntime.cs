@@ -22,41 +22,29 @@ public class xbowFireSpellRuntime : BaseSpellRuntime
     }
     protected override void OnEndPhaseUpdate()   
     { 
-        Debug.Log("Updating during EndPhase...");
+        Debug.Log("Updating during End...");
     }
 
     public override IEnumerator StartSpell(GameObject caster)
     {
-        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseLoop_Enter);
-        // Loop phase — play and wait for clip to finish
+        if (CancelledExit()) yield break;
+        OnLoopPhase_Enter();
         yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
+        OnLoopPhase_End();
+        if (CancelledExit()) yield break;
 
-        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseLoop_End);
-        if (token.IsCanceled && token.spellCancelBy == SpellCancelBy.MovementKey)
-        {
-            RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseExit_Enter);
-            animator.SetTrigger("Exit_Loop");
-            yield break;
-        }
-        // End phase — play and wait for clip to finish
-        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseEnd_Enter);
         SpellProjectileFactory.Spawn(xbowfire_data, caster);
+        OnEndPhase_Enter();
         yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
-        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseEnd_End);
-        OnEndPhaseEnd();
+        OnEndPhase_End();
     }
+
     public override bool Validate(GameObject caster, SpellFateToken token)
     {
         if (!base.Validate(caster, token)) return false;
         return true;
     }
 
-    protected override void OnLoopPhaseUpdate()
-    {
-    }
-    public override void SpellEnd()
-    {
-    }
     public bool Validate(GameObject caster)
     {
         return  true;

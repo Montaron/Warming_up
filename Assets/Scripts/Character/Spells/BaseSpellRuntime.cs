@@ -27,36 +27,55 @@ public abstract class BaseSpellRuntime : ISpell
 
     public virtual IEnumerator StartSpell(GameObject caster)
     {
-        // Start phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerStart, data.startClipStateName, OnStartPhaseUpdate, loopStartPhase, data.startClipSpeedMultiplier);
-        //if (token.IsCanceled) yield break;
-
-        OnStartPhaseEnd();
         
-        // Loop phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
 
-        OnLoopPhaseEnd();
-
-        // End phase — play and wait for clip to finish
         yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
-
-        OnEndPhaseEnd();
     }
-    protected virtual void OnStartPhaseStart()  {}
-    protected virtual void OnLoopPhaseStart()  {}
-    protected virtual void OnEndPhaseStart()  {}
-    protected virtual void OnStartPhaseUpdate() { }
-    protected virtual void OnLoopPhaseUpdate()  { }
-    protected virtual void OnEndPhaseUpdate()   { }
-    // Override in concrete spells to hook into phase transitions
-    protected virtual void OnStartPhaseEnd() { }
-    protected virtual void OnLoopPhaseEnd()  { }
-    protected virtual void OnEndPhaseEnd()   { }
+    //Start methods
+    protected virtual void OnStartPhase_Enter()
+    {
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnStartPhase_Enter);
+    }
+    protected virtual void OnStartPhase_Update(){ }
+    protected virtual void OnStartPhase_End()   
+    { 
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnStartPhase_End);
+    }
+    //Loop methods
+    protected virtual void OnLoopPhase_Enter()  
+    {
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnLoopPhase_Enter);
+    }
+    protected virtual void OnLoopPhase_Update() { }
+    protected virtual void OnLoopPhase_End()    
+    { 
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnLoopPhase_End);
+    }
 
-    // ─────────────────────────────────────────
-    // Wait for animation clip to finish
-    // ─────────────────────────────────────────
+    protected virtual void OnEndPhase_Enter()   
+    {
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnEndPhase_Enter);
+    }
+    protected virtual void OnEndPhase_Update()  { }
+    protected virtual void OnEndPhase_End()     
+    {
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnEndPhase_End);
+    }
+    //Exit methods
+    protected virtual void OnPhaseExit()
+    {
+        RaiseOnSpellPhaseReached(SpellPhaseTrigger.OnPhaseExit);
+    }
+
+    protected bool CancelledExit()
+    {
+        if (!token.IsCanceled) return false;
+        OnPhaseExit();
+        animator.SetTrigger("Cancel_Exit");
+        return true;
+    }
 
     protected IEnumerator PlayPhase(string trigger, string animationStateName, Action OnUpdate, bool isLooping = false, float animSpeedMultiplier = 1f)
     {
@@ -69,7 +88,7 @@ public abstract class BaseSpellRuntime : ISpell
         {
             if (isLooping)
             {
-                while (!token.IsCanceled)
+                while (!token.IsCanceled || !token.SkipRequested)
                 {
                     OnUpdate?.Invoke();
                     yield return null;
@@ -78,7 +97,8 @@ public abstract class BaseSpellRuntime : ISpell
             else
             {
                 while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f
-               //&& !token.IsCanceled//
+               && !token.IsCanceled 
+               && !token.SkipRequested
                && animator.GetCurrentAnimatorStateInfo(0).IsName(animationStateName))
                 {
                     OnUpdate?.Invoke();
@@ -95,39 +115,22 @@ public abstract class BaseSpellRuntime : ISpell
     public virtual bool Validate(GameObject caster, SpellFateToken token)
     {
         if (caster == null)
-        {
-            // Debug.LogWarning("Validate failed: caster is null");
             return false;
-        }
 
         if (animator == null)
-        {
-            // Debug.LogWarning($"Validate failed: no Animator found on {caster.name}");
             return false;
-        }
 
         if (data == null)
-        {
-            // Debug.LogWarning("Validate failed: spell data is null");
             return false;
-        }
         if (token != null)
-        {
             this.token = token;
-        }
         else
-        {
-            // Debug.LogWarning("Validate failed: Token not found");
             return false;
-        }
 
         return true;
     }
 
-    public virtual void SpellEnd()
-    {
-
-    }
+    public virtual void SpellEnd(){ }
 }
 // Spawner — call this from wherever the spell logic triggers the projectile release
 public static class SpellProjectileFactory

@@ -19,29 +19,26 @@ public class ChargeSpellRuntime : BaseSpellRuntime
         if (data != null)
         { charge_data = data; }
     }
+
     public override IEnumerator StartSpell(GameObject caster)
     {
-        // Start phase — play and wait for clip to finish
-        yield return PlayPhase(data.animationTriggerStart, data.startClipStateName, OnStartPhaseUpdate, loopStartPhase, data.startClipSpeedMultiplier);
-        //if (token.IsCanceled) yield break;
+        if (CancelledExit()) yield break;
+        OnStartPhase_Enter();
+        yield return PlayPhase(data.animationTriggerStart, data.startClipStateName, OnStartPhase_Update, loopStartPhase, data.startClipSpeedMultiplier);
+        OnStartPhase_End();
+        if (CancelledExit()) yield break;
 
-        OnStartPhaseEnd();
+        OnLoopPhaseEnter();
+        yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhase_Update, loopLoopPhase, data.loopClipSpeedMultiplier);
+        OnLoopPhase_End();
+        if (CancelledExit()) yield break;
 
-        // Loop phase — play and wait for clip to finish
-        yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhaseUpdate, loopLoopPhase, data.loopClipSpeedMultiplier);
-        if (token.IsCanceled && token.spellCancelBy == SpellCancelBy.keyDown) 
-        {
-            animator.SetTrigger("Exit_Loop");
-            yield break;
-        }
-
-        OnLoopPhaseEnd();
-
-        // End phase — play and wait for clip to finish
-        yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhaseUpdate, loopEndPhase, data.endClipSpeedMultiplier);
-
-        OnEndPhaseEnd();
+        OnEndPhase_Enter();
+        yield return PlayPhase(data.animationTriggerEnd, data.endClipStateName, OnEndPhase_Update, loopEndPhase, data.endClipSpeedMultiplier);
+        OnEndPhase_End();
+        if (CancelledExit()) yield break;
     }
+    
     public override bool Validate(GameObject caster, SpellFateToken token)
     {
         if (!base.Validate(caster, token)) return false;
@@ -49,13 +46,15 @@ public class ChargeSpellRuntime : BaseSpellRuntime
         return true;
     }
 
-    protected override void OnStartPhaseUpdate()
+    protected override void OnStartPhase_Update()
     {
+        base.OnStartPhase_Update;
         Debug.Log("Speed modifier by" + charge_data.speedIni);
         movement.ModifySpeed(charge_data.speedIni);
     }
-    protected override void OnLoopPhaseUpdate()
+    protected override void OnLoopPhase_Update()
     {
+        base.OnLoopPhase_Update;
         currentSpeedMultiplier = Mathf.MoveTowards(
                     currentSpeedMultiplier,
                     charge_data.speedMultiplierMax,

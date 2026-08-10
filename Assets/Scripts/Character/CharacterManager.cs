@@ -89,7 +89,7 @@ public class CharacterManager : MonoBehaviour
             {
                 if (characterCombat.CastSpellRequest(data))
                 {
-                    if (data.spellCastType == SpellCastType.Channeled)
+                    if (data.spellCastType == SpellType.Channeled)
                     {
                         stateMachine.ChangeState(CharacterStateType.Channeling);
                     }
