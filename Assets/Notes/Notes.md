@@ -1,26 +1,19 @@
 #private ToDo
 AnyState transition for the exit_loop trigger -> CHECK
-Who call the end of the spell ? The combatCharacter raised event or the Fatetoken
-make some action trigger fatetoken cancel and other skipphase
+Who call the end of the spell ? The combatCharacter raised event or the Fatetoken. Its obvious, the token is used to communicate between spells and combatManager to interrupt phase/spell. When the spell end, the combat manager send an event to the gamemanager
 if its the charge, if we interrupt while looping the endphase is skipped -- or I need to play an alternative endphase -- but i still need to implement a system that can kill the spell and the animation on the spot
-UnInterruptablePhase should only work for RequestPhaseInterruption
-OneMethod try to interrupt and in the spell data we need a way to link the type of interrupt with the type of fate (cancel or skipphase)
-keyUP cancel the token in loop update and the cancel stay cancel even though we put immunity on the endphase, the token still say cancel maybe i need a transition event separate
-change chargespell to have phase transition
 attach weapon with weaponHandler
-Link spell with weapon apparition
-create a projectile for the fire spell
-composable effect system in additon to the SpellData, to add easy damage reduction, heal, status effects to the spell without having to create them each time
+-Link spell with weapon apparition
+-create a projectile for the fire spell // add damage when the projectile hit an enemy
+-Improve damage component and stat component to have buff and debuff, one entry point. Use SO to make buff and a class to play them during runtime 1 SO (Buffs_data) 1 Class (BuffRuntime) 1 Mono (StatsComponent)
+1 BuffRuntime not like spell that handle all the buff and debuff of the character and send data to a new CombatManager more like GameManager
+Composition over inheritance : avoir la possibilite de creer un buff avec une combinaison de sous buff (Hot + damage reduction + Increase Damage)
 Charge need to be stopped and maybe two end animation or skip end animation totally so i need a way to exit coroutine entirely
-orientation while channeling
-Add two things : -GCD (CharacterCombat), UninterruptableTimerBy enum + Time (SpellData or BaseSpellRuntime or Both)
 merge the new interrupt function in the CharacterCombat
 Remove the logic from the CharacterManager as much as possible and send clear event to change the CharacterState
 what if my character is rooted and can still cast ? there is two state that should coexists but only one will -> state that impair character control and state that can run in parallel
-Spell can have two flags -> extension method where I define impairing State
 what if my character is immune for a short time create a buff list ? I think it is independant of the state of the character and it should be in a class that handle health loss, damage, buff etc
 Rename the current class CharacterCombat to something that represent its function (CharacterSpellCasting) and create a CharacterCombat that can instantiate it. And I could add a class that handle buff, debuff, damage, modify character stats
-I need a monobehaviour hook to update spellElapsedTime if the class is no longer a monobehaviour -> I can consider using Time.Time 
 CharacterCombat has 2 components : Caster and a buff and debuff class ? Or StatsComponent is good enough -> if an ennemy is hit check buff and reduce the initial amount and then apply reduce health   
 How are buffs 1) Applied (through spell, through game bonus) 2) Handled (can start in StatsComponent then refactor)
 Prob need a bunch of enums BuffType
@@ -58,6 +51,12 @@ when winding up using a move keybind should interupt the spell and not trigger t
 1. Spell is hold -> loop animation -> keyUp -> endAnimation -> trigger a projectile -> go back to iddle
 2. Spell is hold -> Movement key is pressed -> loopAnimation is canceled -> no end Animation back to iddle
 need a fast exit trigger that works for all spells
+
+### Two Hander
+dash ? empallade
+Aoe ?
+### Lightning channel
+timer >= tick appy dmg and reset timer
 ### Create SFX & VFX
 Faire jouer les sons et veffets depuis le sort directement ou bien trigger un event a un SpellEffectCoordinator qui aura les refs des SFX et VFX
 SFX sur chaque object envoyant un son ? Non uniquement un singleton SFX.

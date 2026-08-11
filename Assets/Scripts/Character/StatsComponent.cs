@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatsComponent : MonoBehaviour
+public class StatsComponent : MonoBehaviour, IDamageable
 {
     [SerializeField] private Stats_data stats_ini;
     public Stats_data stats_current { get; private set; }
 
+    // Events
     public event Action OnHealthZero;
-    // Start is called abefore the first frame update
+    public event Action<DamageData> DamageData;
     void Start()
     {
                stats_current = Instantiate(stats_ini); 
@@ -29,8 +30,15 @@ public class StatsComponent : MonoBehaviour
     {
         return stats_current.health;
     }
+
     void Die()
     {
         OnHealthZero?.Invoke();
     }
+    
+    public void TakeDamage(DamageData damageData)
+    {
+        ReduceHealth(damageData.damage);
+    }
+
 }
