@@ -11,6 +11,7 @@ public abstract class Spell_data : ScriptableObject
     public CastableContext castContext;
     public CharacterStateType stateTransitionOnCast;
     public SpellType spellType;
+    public WeaponType weaponType;
 
     [Header("Interruption")]
     //Interruption : 
@@ -67,7 +68,7 @@ public static class CastContextExtensions
 public enum WeaponType
 {
     None,
-    Xbow,
+    Crossbow,
     Two_Hander,
     Shield,
 }

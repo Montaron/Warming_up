@@ -16,6 +16,7 @@ MonoBehaviour:
   castContext: 3
   stateTransitionOnCast: 3
   spellType: 0
+  weaponType: 3
   IsInterruptableBy:
   - Phase: 2
     Interrupt: 4

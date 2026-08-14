@@ -16,6 +16,7 @@ MonoBehaviour:
   castContext: 3
   stateTransitionOnCast: 4
   spellType: 2
+  weaponType: 1
   IsInterruptableBy:
   - Phase: 2
     Interrupt: 1
@@ -40,7 +41,7 @@ MonoBehaviour:
   projectile_speed: 1
   projectileSpeed: 25
   projectileSpawnOffset_X: 1
-  projectileSpawnOffset_Z: 1
+  projectileSpawnOffset_Z: 1.2
   projectileLifetime: 5
   projectilePrefab: {fileID: 5195103526891217618, guid: 3212ae2efb2af0c4d949375bab845a69, type: 3}
   maxDamage: 1000

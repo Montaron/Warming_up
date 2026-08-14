@@ -17,6 +17,7 @@ public class CharacterCombat : MonoBehaviour
     [SerializeField] private Vector3 boxHalfExtents = new Vector3(0.5f, 0.8f, 0f);
 
     //Events
+    public event Action<Spell_data> OnSpellStarted;
     public event Action<Spell_data> OnSpellEnded;
     public event Action<CharacterStateType> OnCombatStateChange;
 
@@ -228,6 +229,7 @@ public class CharacterCombat : MonoBehaviour
         currentSpell = InitSpell(spellData);
         currentSpell.Validate(gameObject, spellFateToken);
         spellRunning = true;
+        OnSpellStarted(spellData);
         yield return StartCoroutine(currentSpell.StartSpell(gameObject));
         currentSpell.SpellEnd();
         OnSpellEnded(spellData);

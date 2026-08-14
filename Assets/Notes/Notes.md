@@ -211,3 +211,4 @@ usage of out and creation of the variable in the parameter out + var
         `return false;`
 `if (TryGetImmunity(interrupt_data.Interrupt, interrupt_data.Phase, out var interruptWindow)`
         `&& interruptWindow > spellElapsedTime)`
+shadowing de variables
