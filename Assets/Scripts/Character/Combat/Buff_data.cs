@@ -24,6 +24,6 @@ public enum BuffType
 public enum BuffEffect
 {
     HoT,
-    Dot,
-    DamageReducton,
+    DoT,
+    DamageReduction,
 } 

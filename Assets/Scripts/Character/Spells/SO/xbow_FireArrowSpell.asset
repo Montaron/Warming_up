@@ -15,18 +15,22 @@ MonoBehaviour:
   spellName: xbowFire
   castContext: 3
   stateTransitionOnCast: 4
-  spellCastType: 2
-  UnInterruptablePhase: 4
-  isInterruptableBy: 9
-  unInterrumptableDelayBy: 1
-  UnInterruptableDelay: 0.1
-  startClip: {fileID: 0}
+  spellType: 2
+  IsInterruptableBy:
+  - Phase: 2
+    Interrupt: 1
+    Type: 1
+  - Phase: 2
+    Interrupt: 8
+    Type: 0
+  hasUnInterruptableWindow:
+  - Phase: 2
+    Interrupt: 1
+    time_amount: 0.1
   startClipStateName: 
-  loopClip: {fileID: 7400000, guid: a469dc4c356cc9049a4b9ad0720cf850, type: 2}
   loopClipStateName: Shoot_start
-  endClip: {fileID: 7400000, guid: 4fa3885dd1c1a634495eb7141eea7121, type: 2}
   endClipStateName: Shoot_end
-  startClipSpeedMultiplier: 1
+  startClipSpeedMultiplier: 0.1
   loopClipSpeedMultiplier: 1
   endClipSpeedMultiplier: 1
   animationTriggerStart: 
@@ -34,8 +38,11 @@ MonoBehaviour:
   animationTriggerEnd: Xbow_End
   damage: 100
   projectile_speed: 1
-  projectileSpeed: 1
+  projectileSpeed: 25
   projectileSpawnOffset_X: 1
   projectileSpawnOffset_Z: 1
-  projectileLifetime: 10
+  projectileLifetime: 5
   projectilePrefab: {fileID: 5195103526891217618, guid: 3212ae2efb2af0c4d949375bab845a69, type: 3}
+  maxDamage: 1000
+  timeRange: 3
+  RampUpDelay: 0.1

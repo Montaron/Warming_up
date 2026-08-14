@@ -8,6 +8,7 @@ public class ChargeSpellRuntime : BaseSpellRuntime
     protected override bool loopLoopPhase => true;
     private GameObject target;
     private float currentSpeedMultiplier = 5f;
+    private Vector3 chargeDirection;
 
     public ChargeSpellRuntime(GameObject caster, ChargeSpell_data data, GameObject target)
             : base(caster, data)
@@ -15,9 +16,14 @@ public class ChargeSpellRuntime : BaseSpellRuntime
         if (target != null)
         {
             this.target = target;
+            chargeDirection = target.transform.position - caster.transform.position;
+            chargeDirection.y = 0f;
+            chargeDirection.Normalize();
         }
         if (data != null)
-        { charge_data = data; }
+        {
+            charge_data = data;
+        }
     }
 
     public override IEnumerator StartSpell(GameObject caster)
@@ -28,7 +34,7 @@ public class ChargeSpellRuntime : BaseSpellRuntime
         OnStartPhase_End();
         if (CancelledExit()) yield break;
 
-        OnLoopPhaseEnter();
+        OnLoopPhase_Enter();
         yield return PlayPhase(data.animationTriggerLoop, data.loopClipStateName, OnLoopPhase_Update, loopLoopPhase, data.loopClipSpeedMultiplier);
         OnLoopPhase_End();
         if (CancelledExit()) yield break;
@@ -48,13 +54,12 @@ public class ChargeSpellRuntime : BaseSpellRuntime
 
     protected override void OnStartPhase_Update()
     {
-        base.OnStartPhase_Update;
-        Debug.Log("Speed modifier by" + charge_data.speedIni);
+        base.OnStartPhase_Update();
         movement.ModifySpeed(charge_data.speedIni);
     }
     protected override void OnLoopPhase_Update()
     {
-        base.OnLoopPhase_Update;
+        base.OnLoopPhase_Update();
         currentSpeedMultiplier = Mathf.MoveTowards(
                     currentSpeedMultiplier,
                     charge_data.speedMultiplierMax,
@@ -62,7 +67,12 @@ public class ChargeSpellRuntime : BaseSpellRuntime
                         * Time.deltaTime);
 
         movement.ModifySpeed(currentSpeedMultiplier);
-        movement.MoveCharacterForward();
+        if (target != null)
+        {
+            movement.MoveCharacterTo(chargeDirection);
+        }
+        else
+            movement.MoveCharacterForward();
     }
     public override void SpellEnd()
     {
@@ -90,8 +100,7 @@ public class ChargeSpellRuntime : BaseSpellRuntime
                 target = collider.gameObject,
             };
             damageable.TakeDamage(damageData);
-            // Debug.Log($"{damageData.target.name} took {damageData.damage} from {damageData.attacker.name ?? "unknown"}");
+            token.RequestSkip(SpellCancelBy.ObstacleHit);
         }
-        token.Cancel(SpellCancelBy.ObstacleHit);
     }
 }

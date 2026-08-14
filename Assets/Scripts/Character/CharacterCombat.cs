@@ -29,22 +29,31 @@ public class CharacterCombat : MonoBehaviour
     public bool spellRunning { get; private set; }
     public float spellElapsedTime { get; private set; }
     public SpellPhase currentPhase;
-
     private ISpell currentSpell;
     private SpellFateToken spellFateToken;
 
+    // Targeting
+    [SerializeField] private Camera cam;
+    [SerializeField] private Color highlightColor = Color.blue;
+    [SerializeField] private LayerMask targetableLayers;
+    private CombatTargeting targeting;
+    private void Awake()
+    {
+        if (cam == null) cam = Camera.main;
+        targeting = new CombatTargeting(this, cam, highlightColor, targetableLayers);
+        currentTarget = null;
+    }
     void Start()
     {
 
     }
     void Update()
     {
-        Debug.Log("Current Phase = " + currentPhase);
         if (spellRunning)
         {
             spellElapsedTime += Time.deltaTime;
         }
-        ScanForTargets();
+        targeting.Tick();
     }
     private void ScanForTargets()
     {
@@ -78,11 +87,9 @@ public class CharacterCombat : MonoBehaviour
             }
         }
 
-        // Auto select closest if no target yet
         if (currentTarget == null && closestCollider != null)
             SelectTarget(closestCollider);
 
-        // Clear if current target left the detection box
         if (currentTarget != null && !detectedTargets.Contains(currentTarget))
             ClearTarget();
     }
@@ -127,6 +134,10 @@ public class CharacterCombat : MonoBehaviour
         Gizmos.DrawWireCube(Vector3.zero, size);
         Gizmos.matrix = Matrix4x4.identity; // reset after
     }
+    public void SetTarget(Collider target)
+    {
+        currentTarget = target;
+    }
     //Spell Handling
     private void ResetSpell()
     {
@@ -146,7 +157,15 @@ public class CharacterCombat : MonoBehaviour
         currentSpellName = spellData.spellName;
         currentSpellData = spellData;
         spellFateToken.OnSpellCanceled += spellFateToken_OnSpellCanceled;
-        BaseSpellRuntime spell = (BaseSpellRuntime) spellData.CreateSpellRuntime(gameObject, null);
+        BaseSpellRuntime spell;
+        if (currentTarget != null)
+        {
+            spell = (BaseSpellRuntime) spellData.CreateSpellRuntime(gameObject, currentTarget.gameObject);
+        }
+        else
+        {
+            spell = (BaseSpellRuntime) spellData.CreateSpellRuntime(gameObject, null);
+        }
         spell.OnSpellPhaseReached += HandleSpellPhaseChange;
         currentPhase = SpellPhase.None;
         return spell;
@@ -159,7 +178,7 @@ public class CharacterCombat : MonoBehaviour
                 if (currentPhase == SpellPhase.Loop)
                     OnCombatStateChange?.Invoke(CharacterStateType.Channeling);
                 break;
-            case SpellType.Charged: 
+            case SpellType.Instant:
                 OnCombatStateChange?.Invoke(CharacterStateType.Attacking);
                 break;
         }
@@ -167,21 +186,21 @@ public class CharacterCombat : MonoBehaviour
 
     private void HandleSpellPhaseChange(SpellPhaseTrigger phaseTrigger)
     {
-    switch (phaseTrigger)
-    {
-        case SpellPhaseTrigger.OnStartPhase_Enter:
-            currentPhase = SpellPhase.Start;
-            break;
-        case SpellPhaseTrigger.OnLoopPhase_Enter:
-            currentPhase = SpellPhase.Loop;
-            break;
-        case SpellPhaseTrigger.OnEndPhase_Enter:
-            currentPhase = SpellPhase.End;
-            break;
-        case SpellPhaseTrigger.OnPhaseExit:
-            currentPhase = SpellPhase.None;
-            break;
-    }
+        switch (phaseTrigger)
+        {
+            case SpellPhaseTrigger.OnStartPhase_Enter:
+                currentPhase = SpellPhase.Start;
+                break;
+            case SpellPhaseTrigger.OnLoopPhase_Enter:
+                currentPhase = SpellPhase.Loop;
+                break;
+            case SpellPhaseTrigger.OnEndPhase_Enter:
+                currentPhase = SpellPhase.End;
+                break;
+            case SpellPhaseTrigger.OnPhaseExit:
+                currentPhase = SpellPhase.None;
+                break;
+        }
         RequestStateChange(currentPhase, currentSpellData.spellType);
     }
 
@@ -189,23 +208,21 @@ public class CharacterCombat : MonoBehaviour
     {
 
     }
-
-    public bool CastSpellRequest(Spell_data spellData)
+    public void HandleSpellRequest(Spell_data spellData, InterruptFlag interrupt_reason = 0)
     {
-        if (spellData == null)
+        if (!spellRunning && spellData != null && interrupt_reason == InterruptFlag.KeyDown)
         {
-            return false;
+            StartCoroutine(CastSpell(spellData));
+            return;
         }
         if (spellRunning)
         {
-            return false;
-        }
-        else
-        {
-            StartCoroutine(CastSpell(spellData));
-            return true;
+            Debug.Log("WHY INTERRUPT ?" + interrupt_reason);
+            TryInterruptSpell(interrupt_reason, spellData?.spellName);
+            return;
         }
     }
+
     private IEnumerator CastSpell(Spell_data spellData)
     {
         currentSpell = InitSpell(spellData);
@@ -216,33 +233,14 @@ public class CharacterCombat : MonoBehaviour
         OnSpellEnded(spellData);
         ResetSpell();
     }
-    public bool Test_TryInterruptSpell(InterruptFlag interrupt_reason, string incomingSpellName = null)
+    private bool TryInterruptSpell(InterruptFlag interrupt_reason = 0, string incomingSpellName = null)
     {
         if (!spellRunning)
             return false;
-
-        bool sameSpellCheck = string.IsNullOrEmpty(incomingSpellName)
-            || currentSpellName == incomingSpellName;
-
-        if (!sameSpellCheck || !currentSpellData.isInterruptableBy.HasFlag(interrupt_reason))
+        Debug.Log(currentSpellName + " -- " + incomingSpellName);
+        if (!string.IsNullOrEmpty(incomingSpellName) && incomingSpellName != currentSpellName)
             return false;
-        if (currentSpellData.UnInterruptablePhase.HasFlag(currentPhase))
-            return false;
-        if (IsDelayedUninterruptible(interrupt_reason))
-            return false;
-
-        CancelCurrentSpell(interrupt_reason, SpellInterruptionType.CancelSpell);
-        return true;
-    }
-
-
-    public bool Test_TryInterruptSpell2(InterruptFlag interrupt_reason = 0, string incomingSpellName = null)
-    {
-        if (!spellRunning)
-            return false;
-        if (!string.IsNullOrEmpty(incomingSpellName) && incomingSpellName == currentSpellName)
-            interrupt_reason = InterruptFlag.KeyDown;
-
+        Debug.Log("HERE");
         if (!TryGetInterruption(interrupt_reason, currentPhase, out var interrupt_data))
             return false;
         if (TryGetImmunity(interrupt_data.Interrupt, interrupt_data.Phase, out var interruptWindow)
@@ -254,51 +252,9 @@ public class CharacterCombat : MonoBehaviour
             CancelCurrentSpell(interrupt_reason, SpellInterruptionType.CancelSpell);
         return true;
     }
-
-    private bool isUninterruptableByDelay(InterruptFlag interrupt_reason)
-    {
-        var unInterruptable = currentSpellData.hasUnInterruptableWindow.Find(r => r.Flag == interrupt_reason);
-        //chek si 
-        if (unInterruptable.Phase.HasFlag(currentPhase) && unInterruptable.time_amount > spellElapsedTime)
-            return true;
-        return false; 
-    }
-    private bool IsDelayedUninterruptible(InterruptFlag interrupt_reason)
-    {
-        Debug.Log(currentSpellData.isUninterruptable);
-        return currentSpellData.isUninterruptable
-            && currentSpellData.unInterrumptableDelayBy.HasFlag(interrupt_reason)
-            && currentSpellData.UnInterruptableDelay >= spellElapsedTime;
-    }
-    //public bool TryInterruptSpell(Spell_data spellData, InterruptFlag interrupt_reason)
-    //{
-        //if (spellRunning)
-        //{
-            //if (currentSpellName == spellData.spellName && spellData.isInterruptableBy.HasFlag(interrupt_reason))
-            //{
-                //CancelCurrentSpell(interrupt_reason);
-                //return true;
-            //}
-        //}
-        //return false;
-    //}
-    //public bool TryInterruptCurrentSpell(InterruptFlag interrupt_reason)
-    //{
-        //if (spellRunning)
-        //{
-            //if (currentSpellData.isInterruptableBy.HasFlag(interrupt_reason))
-            //{
-                //if (currentSpellData.isUninterruptable && currentSpellData.unInterrumptableDelayBy.HasFlag(interrupt_reason) && currentSpellData.UnInterruptableDelay < spellElapsedTime)
-                    //CancelCurrentSpell(interrupt_reason);
-                //return true;
-            //}
-        //}
-        //return false;
-    //}
     private void CancelCurrentSpell(InterruptFlag interrupt_reason, SpellInterruptionType interrupt_type)
     {
         if (currentSpell == null || spellFateToken.IsCanceled || spellFateToken.SkipRequested) return;
-        //Debug.Log("Time elapsed = " + spellElapsedTime);
         SpellCancelBy spellCancelBy = interrupt_reason switch
         {
             InterruptFlag.KeyDown => SpellCancelBy.keyDown,
@@ -313,30 +269,34 @@ public class CharacterCombat : MonoBehaviour
         else
             spellFateToken.RequestSkip(spellCancelBy);
     }
-private bool TryGetInterruption(InterruptFlag flag, SpellPhase phase, out SpellInterruption_data interrupt_data)
-{
-    foreach (var r in currentSpellData.IsInterruptableBy)
+    private bool TryGetInterruption(InterruptFlag flag, SpellPhase phase, out SpellInterruption_data interrupt_data)
     {
-        if (r.Interrupt == flag && r.Phase == phase)
+        foreach (var r in currentSpellData.IsInterruptableBy)
         {
-            interrupt_data = r;
-            return true;
+            if (r.Interrupt == flag && r.Phase == phase)
+            {
+                interrupt_data = r;
+                return true;
+            }
         }
+        interrupt_data = default;
+        return false;
     }
-    interrupt_data = default;
-    return false;
-}
-private bool TryGetImmunity(InterruptFlag flag, SpellPhase phase, out float interruptWindow)
-{
-    foreach (var r in currentSpellData.hasUnInterruptableWindow)
+    private bool TryGetImmunity(InterruptFlag flag, SpellPhase phase, out float interruptWindow)
     {
-        if (r.Interrupt == flag && r.Phase == phase)
+        foreach (var r in currentSpellData.hasUnInterruptableWindow)
         {
-            interruptWindow = r.time_amount;
-            return true;
+            if (r.Interrupt == flag && r.Phase == phase)
+            {
+                interruptWindow = r.time_amount;
+                return true;
+            }
         }
+        interruptWindow = 0;
+        return false;
     }
-    interruptWindow = 0;
-    return false;
-}
+    private void OnDisable()
+    {
+        targeting.ClearHighlightExternally(); // évite un objet qui reste bleu si le combattant est désactivé en plein hover
+    }
 }

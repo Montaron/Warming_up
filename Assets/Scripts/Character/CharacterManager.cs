@@ -54,61 +54,39 @@ public class CharacterManager : MonoBehaviour
         if (characterCombat != null)
         {
             characterCombat.OnSpellEnded += HandleSpellEnded;
+            characterCombat.OnCombatStateChange += HandleCombatStateChange; 
         }
+    }
+
+    private void HandleCombatStateChange(CharacterStateType type)
+    {
+        stateMachine.ChangeState(type);
     }
 
     private void HandleSpellGetKeyUp(Spell_data data)
     {
-        Debug.Log("KEY UP");
-        characterCombat.Test_TryInterruptSpell(InterruptFlag.KeyUp, data.spellName);
+        characterCombat.HandleSpellRequest(data, InterruptFlag.KeyUp);
     }
 
     private void HandleSpellEnded(Spell_data data)
     {
         if (characterMov_iso.inputVector != Vector2.zero)
-        {
             stateMachine.ChangeState(CharacterStateType.Running);
-        }
         else
-        {
             stateMachine.ChangeState(CharacterStateType.Iddle);
-        }
     }
 
     private void HandleSpellRequested(Spell_data data)
     {
-        if (characterCombat.spellRunning)
-        {
-            Debug.Log("Trying to interrupt");
-            characterCombat.Test_TryInterruptSpell(InterruptFlag.KeyDown, data.spellName);
-            return;
-        }
-        else
-        {
-            if (data.castContext.Allows(currentState))
-            {
-                if (characterCombat.CastSpellRequest(data))
-                {
-                    if (data.spellCastType == SpellType.Channeled)
-                    {
-                        stateMachine.ChangeState(CharacterStateType.Channeling);
-                    }
-                    else
-                    {
-                        stateMachine.ChangeState(CharacterStateType.Attacking);
-                    }
-                }
-            }
-        }
+            characterCombat.HandleSpellRequest(data, InterruptFlag.KeyDown);
     }
 
     private void HandleMoveInput(Vector2 vector)
     {
         characterMov_iso.SetInput(vector);
-        if (vector.magnitude > 0.1f && currentState == CharacterStateType.Iddle || currentState == CharacterStateType.Running
-            || (characterCombat.currentSpellData != null && characterCombat.currentSpellData.isInterruptableBy.HasFlag(InterruptFlag.Movement)))
+        if (vector.magnitude > 0.1f)
         {
-            characterCombat.Test_TryInterruptSpell(InterruptFlag.Movement);
+            characterCombat.HandleSpellRequest(null, InterruptFlag.Movement);
         }
     }
 

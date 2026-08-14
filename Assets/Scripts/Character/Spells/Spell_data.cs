@@ -18,24 +18,10 @@ public abstract class Spell_data : ScriptableObject
     // -Some Phases can have window where they cant be interrupted (SpellUnInterruptablePhaseWindow_data)
     public List<SpellInterruption_data> IsInterruptableBy;
     public List<SpellUnInterruptablePhaseWindow_data> hasUnInterruptableWindow;
-    //I think it is useless now since I have all the data contained in my struct, each interruption is linked to its phase and the type of interruption 
-    public SpellPhase UnInterruptablePhase;
-    //Plusbesoin
-    public InterruptFlag isInterruptableBy;
-    //Plusbesoin
-    public InterruptFlag unInterrumptableDelayBy;
-    //Check if the list is empty
-    //plus besoin
-    public bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute at read after serialization
-    public float UnInterruptableDelay = 0f;
-    //bool isUninterruptable => unInterrumptableDelayBy != InterruptFlag.None; //Compute once at field Initializer time and for SO its always 0 at construction
 
     [Header("Animation Clips")]
-    public AnimationClip startClip;
     public string startClipStateName;
-    public AnimationClip loopClip;
     public string loopClipStateName;
-    public AnimationClip endClip;
     public string endClipStateName;
 
     [Header("Animation Clips Speed Multiplier")]

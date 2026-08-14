@@ -40,7 +40,6 @@ public class CharacterStateMachine : MonoBehaviour
         previousState = idleState;
     }
 
-    // Update is called once per frame
     void Update()
     {
         currentState.HandleInput();

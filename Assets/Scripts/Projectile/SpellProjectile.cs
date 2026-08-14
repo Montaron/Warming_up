@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class SpellProjectile : MonoBehaviour
 {
+    private GameObject source;
     private Vector3 direction;
     private float speed;
     private float lifetime;
     private float elapsed;
+    private float damage;
 
-    public void Initialize(Vector3 direction, float speed, float lifetime = 5f)
+    public void Initialize(Vector3 direction, ProjectileSpell_data data, GameObject caster, float damage)
     {
         this.direction = direction.normalized;
-        this.speed = speed;
-        this.lifetime = lifetime;
-        this.elapsed = 0f;
+        speed = data.projectileSpeed;
+        lifetime = data.projectileLifetime;
+        elapsed = 0f;
+        this.damage = damage;
+        source = caster;
     }
 
     private void Update()
@@ -25,10 +29,20 @@ public class SpellProjectile : MonoBehaviour
         if (elapsed >= lifetime)
             Destroy(gameObject);
     }
-
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) 
     {
-        // Hit resolution (damage, VFX, etc.) goes here
+        if (other.gameObject == source)
+            return;
+        if (ComponentUtils.TryGetDamageable(other, out IDamageable damageable))
+        {
+            var damageData = new DamageData
+            {
+                damage = damage,
+                attacker = source,
+                target = other.gameObject,
+            };
+            damageable.TakeDamage(damageData);
+        }
         Destroy(gameObject);
     }
 }

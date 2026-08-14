@@ -31,6 +31,10 @@ public class CharacterMovement_iso : MonoBehaviour
     {
         controller.Move(transform.forward * currentSpeed * Time.deltaTime);
     }
+    public void MoveCharacterTo(Vector3 direction)
+    {
+        controller.Move(direction * currentSpeed * Time.deltaTime);
+    }
     public void OrientCharacter()
     {
         if (GetMouseWorldPosition(out Vector3 mouseWorldPos))
@@ -85,7 +89,6 @@ public class CharacterMovement_iso : MonoBehaviour
     }
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        // Debug.Log("char_mov -Collision with: " + hit.gameObject.name);
         OnHitObstacle?.Invoke(hit.collider);
     }
     

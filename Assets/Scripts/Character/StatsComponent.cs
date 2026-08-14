@@ -19,6 +19,7 @@ public class StatsComponent : MonoBehaviour, IDamageable
     public void ReduceHealth(float damage)
     {
         stats_current.health -= damage;
+        Debug.Log("Taking damage = " + damage);
         if (stats_current.health <= 0)
         {
             // Debug.Log(GetCurrentHealth());

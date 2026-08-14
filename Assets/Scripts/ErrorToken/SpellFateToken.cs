@@ -12,20 +12,24 @@ public class SpellFateToken
 
     public void Cancel(SpellCancelBy cancelBy)
     {
+        Debug.Log("CANCEL");
         IsCanceled = true;
         spellCancelBy = cancelBy;
-        Debug.Log("Token CANCEL reason " + cancelBy);
         OnSpellCanceled?.Invoke(cancelBy);
     }
 
     public void RequestSkip(SpellCancelBy cancelBy)
     {
+        Debug.Log("Request SKIP");
         SkipRequested = true;
-        Debug.Log("Token SKIP reason " + cancelBy);
         OnPhaseSkipRequested?.Invoke(cancelBy);
     }
 
-    public void ResetSkip() => SkipRequested = false;
+    public void ResetSkip()
+    {
+        Debug.Log("Skip reset");
+        SkipRequested = false;
+    }
 }
 
 public enum SpellCancelBy
