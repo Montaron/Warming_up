@@ -1,6 +1,7 @@
 #private ToDo
 when the end animation play for the charge, i should be able to move and the animation still play
 i think i need to have the bottom and top animated separatly
+i need to add phase option that allow action and movement
 AnyState transition for the exit_loop trigger -> CHECK
 Who call the end of the spell ? The combatCharacter raised event or the Fatetoken. Its obvious, the token is used to communicate between spells and combatManager to interrupt phase/spell. When the spell end, the combat manager send an event to the gamemanager
 if its the charge, if we interrupt while looping the endphase is skipped -- or I need to play an alternative endphase -- but i still need to implement a system that can kill the spell and the animation on the spot
