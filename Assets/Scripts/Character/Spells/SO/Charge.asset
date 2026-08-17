@@ -31,9 +31,9 @@ MonoBehaviour:
   animationTriggerStart: Charging
   animationTriggerLoop: Charging_Loop
   animationTriggerEnd: Charging_End
-  speedIni: 5
-  speedMultiplierStart: 5
-  speedMultiplierMax: 8
+  speedIni: 2
+  speedMultiplierStart: 2
+  speedMultiplierMax: 5
   timeToReachMaxMultiplier: 10
   chargeDuration: 2
   damage: 100

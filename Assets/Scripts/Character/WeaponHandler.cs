@@ -36,18 +36,19 @@ public class WeaponHandler : MonoBehaviour
 
     private void Start()
     {
+        Equip_Weapon_Attack(WeaponType.Two_Hander);
         combat.OnSpellStarted += OnSpellStarted;
         combat.OnSpellEnded += OnSpellEnded;
     }
 
     private void OnSpellEnded(Spell_data data)
     {
-        Equip_Weapon_Idle(data.weaponType);
+        //Equip_Weapon_Idle(data.weaponType);
     }
 
     private void OnSpellStarted(Spell_data data)
     {
-        Equip_Weapon_Attack(data.weaponType);
+        //Equip_Weapon_Attack(data.weaponType);
     }
 
     public void Equip_Weapon_Idle(WeaponType weapon)

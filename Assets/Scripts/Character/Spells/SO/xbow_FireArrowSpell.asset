@@ -33,13 +33,13 @@ MonoBehaviour:
   endClipStateName: Shoot_end
   startClipSpeedMultiplier: 0.1
   loopClipSpeedMultiplier: 1
-  endClipSpeedMultiplier: 1
+  endClipSpeedMultiplier: 0.1
   animationTriggerStart: 
   animationTriggerLoop: Xbow_Loop
   animationTriggerEnd: Xbow_End
   damage: 100
   projectile_speed: 1
-  projectileSpeed: 25
+  projectileSpeed: 50
   projectileSpawnOffset_X: 1
   projectileSpawnOffset_Z: 1.2
   projectileLifetime: 5

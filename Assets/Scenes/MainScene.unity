@@ -228,6 +228,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: skeleton_model
       objectReference: {fileID: 0}
+    - target: {fileID: 5319104385797003711, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
+      propertyPath: weaponHandler_data.Array.data[2].idle_socket
+      value: 
+      objectReference: {fileID: 1230547606}
+    - target: {fileID: 5319104385797003711, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
+      propertyPath: weaponHandler_data.Array.data[2].attack_socket
+      value: 
+      objectReference: {fileID: 837917223}
+    - target: {fileID: 5319104385797003712, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
+      propertyPath: keybinds.Array.data[1].key
+      value: 258
+      objectReference: {fileID: 0}
     - target: {fileID: 5319104385797003716, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
       propertyPath: moveSpeed
       value: 10
@@ -235,11 +247,11 @@ PrefabInstance:
     - target: {fileID: 5319104385797003716, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
       propertyPath: mainCamera
       value: 
-      objectReference: {fileID: 1219789295}
+      objectReference: {fileID: 963194227}
     - target: {fileID: 5319104385797003716, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
       propertyPath: cameraTransform
       value: 
-      objectReference: {fileID: 1219789292}
+      objectReference: {fileID: 963194228}
     - target: {fileID: 5370218520723747297, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -286,6 +298,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
+--- !u!4 &837917223 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 588779460, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
+  m_PrefabInstance: {fileID: 751394877}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &951182898
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -361,7 +378,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &963194226
 AudioListener:
   m_ObjectHideFlags: 0
@@ -440,11 +457,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0c3bc49b26fe8347855363d8c09454e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 1076777266}
   mouseSensitivity: 3
   minYAngle: -30
   maxYAngle: 70
-  distance: 5
+  distance: 10
   collisionRadius: 0.3
   collisionSmooth: 10
 --- !u!1001 &1050901302
@@ -509,15 +526,10 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5370218520723747297, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
   m_PrefabInstance: {fileID: 751394877}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1219789292 stripped
+--- !u!4 &1230547606 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 2625297061289384072, guid: 7242d5f106d6db54486d4a574ab95681, type: 3}
-  m_PrefabInstance: {fileID: 2625297062508583268}
-  m_PrefabAsset: {fileID: 0}
---- !u!20 &1219789295 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 2625297061289384075, guid: 7242d5f106d6db54486d4a574ab95681, type: 3}
-  m_PrefabInstance: {fileID: 2625297062508583268}
+  m_CorrespondingSourceObject: {fileID: 323587872, guid: 50605e9fe2754ed47a01cb38f6770dd1, type: 3}
+  m_PrefabInstance: {fileID: 751394877}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1467300837
 PrefabInstance:
@@ -848,11 +860,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2625297061289384075, guid: 7242d5f106d6db54486d4a574ab95681, type: 3}
       propertyPath: orthographic size
-      value: 6.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2625297061289384079, guid: 7242d5f106d6db54486d4a574ab95681, type: 3}
       propertyPath: m_Name
       value: Camera_iso
+      objectReference: {fileID: 0}
+    - target: {fileID: 2625297061289384079, guid: 7242d5f106d6db54486d4a574ab95681, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2625297061289384084, guid: 7242d5f106d6db54486d4a574ab95681, type: 3}
       propertyPath: target
