@@ -1,6 +1,8 @@
 #private ToDo
-when the end animation play for the charge, i should be able to move and the animation still play
-i think i need to have the bottom and top animated separatly
+system to push other player (collider if a player charge the ally in the path must be pushed, two ally player charger should cancel and stun such as collision with wall)
+make a system where the direction of impact count, if an arrow it in front it can be blocked
+create a cd manager for spells ? Or if i just have the dash on cd and dont need a whole manager for that
+make an enemy that can shoot stuff so character can take dmg and test stuff
 i need to add phase option that allow action and movement
 AnyState transition for the exit_loop trigger -> CHECK
 Who call the end of the spell ? The combatCharacter raised event or the Fatetoken. Its obvious, the token is used to communicate between spells and combatManager to interrupt phase/spell. When the spell end, the combat manager send an event to the gamemanager
@@ -28,37 +30,47 @@ that should be the same for the buffer system. One entry point for everything.
 Could be at start or at the end of a spell -> BuffComponent -> TryAddBuff -> the buff already exists or add them ? Need buff logic here (additive, unique, cap, immunity ?)
 CharacterManager should be used to get data and not necessarly logic in it.
 instead of bool return if a buff is applied I can return a enum : Succes, Fail_Resisted, ... 
-if mouseover enemy orient the character to the enemy directly (little help)
-### Weapon Change when casting
-put the shield on the hand while charging // make a system for each spells has a way to handle weapon
--> spellData has the information about the weapon -> SpellRuntime use it to communicate with the WeaponHandler class
-How spellData define the information ? LH (Left Hand) RH (Right hand) BH (Both hand) TH (Two_Hand) and then which kind of weapon (BOW ? TWO_HANDERS ? 1H_SWORD ? 2H_Arbalest ? 1H_SHIELD ?)
-1) Easy methods to swap weapon in WeaponHandler 
-2) In spell Data add a field to the corresponding weapon the spell is using
-3) When the spell is created in CharacterCombat send the data is send to the CharacterManager and with the data, send info to the weaponHandler to swap weapon
 
-### Sword and chield charge
-add the weapon change 
+## Warrior
+### Shield
 when the charge is stopped manually before touching something, make a stop animation that take a bit of time to make the char vulnerable ?
 if second end animation, add a list instead of one animation in the SO.
-In the scenario of two character charging at each other, the damage could be dependant 
-### Arbalest weapon
-Create an arbalest in blender and a spell to fire with it
-Create an fire animation in blender (start loop end)
-How to make an explosive animation ? F curve bezier
+In the scenario of two character charging at each other, the damage could be dependant of the charge duration (charge give an bloc )
+add the option to slightly turn when the charge is on (like sion)
+add more damage if the charge is canalized from far away
+when charging the character is slower because exhausted and need a bit of time to recover (dash still alowed)
+Talents idea:
+able to slighlty move during charge
+abse to interrupt charge
+### Crossbow (pour les squelettes faire un gros gun qui tire un boulet plus coherent)
 Input can be hold to increase the damage -> wind up animation wind up end animation
-Add that logic in the Loop coroutine of the Spell class
-Interaction between the InputHandler and the Spell execution ?
-press -> start hold ? loop wind up use getkeydown and getkeyup to send a bool event to the CharacterManager and when its false interrupt the loop coroutine. How ? Need to have enum for windup type spell
-when winding up using a move keybind should interupt the spell and not trigger the fire
-1. Spell is hold -> loop animation -> keyUp -> endAnimation -> trigger a projectile -> go back to iddle
-2. Spell is hold -> Movement key is pressed -> loopAnimation is canceled -> no end Animation back to iddle
-need a fast exit trigger that works for all spells
+make the damage near the target way bigger (use the wind up to do that much dmg from range) to force player to close the gap
+Have a big reload animation so if the player want to shot twice it pays the risk of having to be stuck in the animation
+### Two Hander (impaling verion : sword, lance)
+having a wind up and dash forward, impale
+### Two Hander (Smash version, hammer, axes)
 
-### Two Hander
-dash ? empallade
-Aoe ?
-### Lightning channel
+## Wizard
+### Fire (hand in fire cooler ?)
+Become a ball of fire (movement to the cursor, find a way to make it slippery with momentum) doing area damage then when user want explode, killing him in the process ?
+Laser ofc
+### Lightning Staff (all body electrified)
+the classic eletric chain
+### Arcane
+create a wall that can be destroyed
+### Ice
+ice block
+
+## Warden
+### Aspect of the Bear
+### Aspect of the Crow
+### Aspect of the Cheetah 
+
+## Warlock
+
+### Necromancy
+### Life stealer  
+### Chaos
 timer >= tick appy dmg and reset timer
 ### Create SFX & VFX
 Faire jouer les sons et veffets depuis le sort directement ou bien trigger un event a un SpellEffectCoordinator qui aura les refs des SFX et VFX
@@ -66,27 +78,22 @@ SFX sur chaque object envoyant un son ? Non uniquement un singleton SFX.
 Faire des effets bandes dessinees pour la vitesse (hades), les impacts -> Claude peut generer des VFX ? Non mais peut aider a generer des shaders et des VFX graph et shuriken particle system
 
 ### GamePlay Idea
-when mousebutton 1 is hold the character could be oriented toward the cursor to make targetting easier ?
-How to make the stance dance fun -> how to make the player switch between them
-3 Stances -> 3 spells
-Change stance by using one spells or having control of which stance to go with specific binds ?
-In Eso we swap with a bind and each bar need to be swaped to rebuff or heal/dps and set bonus change
-
-I like the idea of having an ultimate and ultimate point that can be generated to use it for each stance (later on add the possibility to choice between multiple of them)
+Two main gameplay issue
+- How many weapon can a player carry ? lets start by 3
+Have an idea where it could be one Weapon, one Element, one Aspect OR Warrior Archetype, Wizard, Warden, Warlock, WrathBringer
+- How to make the player want to use all the weapon he has (crossbow reload time but for other one ? Shield explode when block ? surcharge for lightning spell ?)
+- How to make kill conditon fun and not frustrating ?
+Before starting the game, the player have the option to pick 3 weapons and maybe enchantment next (mimicking gear set in eso) and choose one ultimate
+put the spells where you want
+3 bases spells : punch when close stun ? maybe not , dash (dash into someone stun him), block (small immunity different than shield abilities, shield block from front attack only outplay can happen here ? In the orientation and animation lock)
+1 weapon could have 5 spells and the player has to choose two
 The ultimate generation cant work like in eso because i want the combat to be fast paced with huge dmg. A charge can kill someone on the spot such 
-
-Stack of destabilisation that could lead to a 1sec stun and allow charge to 
-In the continuation of this idea, the should could block 50dmg but if the shield block more than that amount the character is stun (the stun duration could be dependant of that that surplus blocked)
-
-Maybe right now for proof of concept and code i could make one bar with charge, arbalest hit and a swing attack in 2hand with an ult if I can make that it means i can expand on more complex 
-combat system
 
 Having ragdoll effect on deaths
 
 Character could have multiple live to make the combat more interesting (when killing some one else took their soul ? visual looking skeleton aura red, blue etc)
 
-When channeling, could use other keybind to change the spell for instance, arrow could have AoE, Heal, Stun or Single target
-the mouse spell could be the main one and more change to it than the other
+having a dash really often that can interrupt animation 
 # Game Monolith
 ## GameManager
 ## Character
