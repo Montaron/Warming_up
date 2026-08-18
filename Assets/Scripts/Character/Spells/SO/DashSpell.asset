@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcadfe42d7d60144babd33c00c49b64d, type: 3}
+  m_Name: DashSpell
+  m_EditorClassIdentifier: 
+  spellName: Dash
+  castContext: 11
+  stateTransitionOnCast: 0
+  spellType: 0
+  weaponType: 0
+  IsInterruptableBy: []
+  hasUnInterruptableWindow: []
+  startClipStateName: Dash
+  loopClipStateName: 
+  endClipStateName: 
+  startClipSpeedMultiplier: 3
+  loopClipSpeedMultiplier: 1
+  endClipSpeedMultiplier: 1
+  animationTriggerStart: Dash
+  animationTriggerLoop: 
+  animationTriggerEnd: 
+  DashSpeed: 3

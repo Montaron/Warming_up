@@ -8,7 +8,7 @@ public class CharacterMovement_iso : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSpeed = 10f;
     private CharacterController controller;
-    private float currentSpeed;
+    public float currentSpeed;
 
     public Vector2 inputVector { get; private set; }
     public Vector3 moveDirection { get; private set; }
@@ -26,6 +26,18 @@ public class CharacterMovement_iso : MonoBehaviour
     public void SetInput(Vector2 input)
     {
         inputVector = input;
+    }
+
+    public Vector3 GetMouseDirection()
+    {
+        if (GetMouseWorldPosition(out Vector3 mouseWorldPos))
+        {
+            Vector3 direction = mouseWorldPos - transform.position;
+            direction.y = 0f;
+            direction.Normalize();
+            return direction;
+        }
+        return Vector3.zero;
     }
     public void MoveCharacterForward()
     {

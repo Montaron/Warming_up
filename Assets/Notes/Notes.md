@@ -1,4 +1,7 @@
 #private ToDo
+add damage to charge when channeling
+add damage to crossbow when target is close
+i have a dash, it interrupt spell but its not casted afterward need a cast on top feature
 system to push other player (collider if a player charge the ally in the path must be pushed, two ally player charger should cancel and stun such as collision with wall)
 make a system where the direction of impact count, if an arrow it in front it can be blocked
 create a cd manager for spells ? Or if i just have the dash on cd and dont need a whole manager for that

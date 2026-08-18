@@ -239,10 +239,13 @@ public class CharacterCombat : MonoBehaviour
     {
         if (!spellRunning)
             return false;
-        Debug.Log(currentSpellName + " -- " + incomingSpellName);
+        if (incomingSpellName == "Dash")
+        {
+            CancelCurrentSpell(interrupt_reason, SpellInterruptionType.CancelSpell);
+            return true;
+        }
         if (!string.IsNullOrEmpty(incomingSpellName) && incomingSpellName != currentSpellName)
             return false;
-        Debug.Log("HERE");
         if (!TryGetInterruption(interrupt_reason, currentPhase, out var interrupt_data))
             return false;
         if (TryGetImmunity(interrupt_data.Interrupt, interrupt_data.Phase, out var interruptWindow)

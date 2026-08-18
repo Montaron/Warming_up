@@ -31,9 +31,9 @@ MonoBehaviour:
   startClipStateName: 
   loopClipStateName: Shoot_start
   endClipStateName: Shoot_end
-  startClipSpeedMultiplier: 0.1
+  startClipSpeedMultiplier: 1
   loopClipSpeedMultiplier: 1
-  endClipSpeedMultiplier: 0.1
+  endClipSpeedMultiplier: 1
   animationTriggerStart: 
   animationTriggerLoop: Xbow_Loop
   animationTriggerEnd: Xbow_End
