@@ -211,7 +211,8 @@ Save as .fbx apply all transform ctrl + a
 To import new animation import the whole character and ctrl + d to duplicate in Unity. Now i have animation detached from the character and usable in Unity
 But i have to keep the model, so I want to clean up by having one model and not 10 for each new animations
 I need one fbx file with an avatar or generic avatar assigned to the Animator. One i have make a .anim (ctrl + d) of all the animation in the fbx i can discard them (animation onglet dont import animation) 1 mesh 1 avatar and the animations
-
+## VFX / Shader
+![alt text](C:/Users/monta/OneDrive/Documents/Unity/Images/lightreflexion.png)
 ## Coding eurekas
 How to merge the two interrupt method is the CharacterCombat ? pass a string and if it is null its the method that dont need to check data spell name (also spellData data = null to set a default value to a method parameter) 
 Monobehaviour hook with static event in a monobehaviour class that trigger an event every update tick with the time

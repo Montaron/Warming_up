@@ -4,7 +4,6 @@ using System;
 public class CharacterMovement_iso : MonoBehaviour
 {
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private Transform cameraTransform;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSpeed = 10f;
     private CharacterController controller;
@@ -62,8 +61,8 @@ public class CharacterMovement_iso : MonoBehaviour
     }
     public void MoveCharacter()
     {
-        Vector3 camForward = cameraTransform.forward;
-        Vector3 camRight = cameraTransform.right;
+        Vector3 camForward = mainCamera.transform.forward;
+        Vector3 camRight = mainCamera.transform.right;
 
         camForward.y = 0f;
         camRight.y = 0f;
@@ -90,14 +89,14 @@ public class CharacterMovement_iso : MonoBehaviour
     }
     void Initialize()
     {
-        if (cameraTransform == null)
+        if (mainCamera == null)
         {
             // Debug.LogError("Camera Transform is not assigned in char_mov_iso.");
         }
         inputVector = Vector2.zero;
         moveDirection = Vector3.zero;
         currentSpeed = moveSpeed;
-        moveDirection = cameraTransform.forward;
+        moveDirection = mainCamera.transform.forward;
     }
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
