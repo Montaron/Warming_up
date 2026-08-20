@@ -81,7 +81,9 @@ public enum InterruptFlag
     Stun = 2,
     KeyDown = 4,
     KeyUp = 8,
-    EnnemyHit = 16,
+    Self = 16 // if KeyDown interrupt the same spell
+    EnnemyHit = 32,
+    Dash = 64, //if KeyDown is associated with Dash
 }
 
 public enum SpellInterruptionType

@@ -235,17 +235,19 @@ public class CharacterCombat : MonoBehaviour
         OnSpellEnded(spellData);
         ResetSpell();
     }
-    private bool TryInterruptSpell(InterruptFlag interrupt_reason = 0, string incomingSpellName = null)
+    private bool TryInterruptSpell(InterruptFlag interrupt_reason = 0, string incomingSpellName = null) //Maybe pass the data instead so i can check if the new spell need to be cast right after
     {
         if (!spellRunning)
             return false;
-        if (incomingSpellName == "Dash")
-        {
-            CancelCurrentSpell(interrupt_reason, SpellInterruptionType.CancelSpell);
-            return true;
-        }
-        if (!string.IsNullOrEmpty(incomingSpellName) && incomingSpellName != currentSpellName)
-            return false;
+        if (!string.IsNullOrEmpty(incomingSpellName) && incomingSpellName ==currentSpellName)
+            interrupt_reason = InterruptFlag.Self;
+        if (!string.IsNullOrEmpty(incomingSpellName) && incomingSpellName == "Dash")
+            interrupt_reason = InterruptFlag.Dash;
+        //if (!string.IsNullOrEmpty(incomingSpellName) && incomingSpellName != currentSpellName)
+         //   return false; i think i need to remove that if i want my dash to work
+         //   here we have if spell has a name et the name is not equal to the current spell you dont interrupt, in the case of dash i will need to not return here
+         //   now i need a condition where a KeyDown works if the spell name are equal 
+         if 
         if (!TryGetInterruption(interrupt_reason, currentPhase, out var interrupt_data))
             return false;
         if (TryGetImmunity(interrupt_data.Interrupt, interrupt_data.Phase, out var interruptWindow)

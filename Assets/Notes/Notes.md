@@ -1,4 +1,5 @@
 #private ToDo
+add dash to interruptible to current spell
 add damage to charge when channeling
 add damage to crossbow when target is close
 i have a dash, it interrupt spell but its not casted afterward need a cast on top feature
